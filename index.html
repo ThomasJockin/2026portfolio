@@ -10,7 +10,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Thomas Jockin">
 <meta property="og:title" content="Thomas Jockin — Readex Type Design, A Philosophy of Glimpses & TypeThursday">
-<meta property="og:description" content="Technology should make us more human, not less — in typefaces built for how people read, in the argument for why judgment still matters, and in a room of people who still show up to practice it.">
+<meta property="og:description" content="Technology should make us more human, not less — in typefaces built for how people read, in the inquiry for why judgment still matters, and in spaces to witness the Beautiful.">
 <meta property="og:url" content="https://www.thomasjockin.com/">
 <meta property="og:image" content="https://www.thomasjockin.com/images/book-cover-glimpses.webp">
 <meta property="og:image:width" content="300">
@@ -19,7 +19,7 @@
 
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Thomas Jockin — Readex Type Design, A Philosophy of Glimpses & TypeThursday">
-<meta name="twitter:description" content="Technology should make us more human, not less — in typefaces built for how people read, in the argument for why judgment still matters, and in a room of people who still show up to practice it.">
+<meta name="twitter:description" content="Technology should make us more human, not less — in typefaces built for how people read, in the inquiry for why judgment still matters, and in spaces to witness the Beautiful.">
 <meta name="twitter:image" content="https://www.thomasjockin.com/images/book-cover-glimpses.webp">
 
 <script type="application/ld+json">
@@ -141,7 +141,24 @@
   }
 
   @media (max-width: 640px) {
-    .shell-nav .links { gap: 1rem; }
+    .shell-nav {
+      height: auto;
+      flex-wrap: wrap;
+      row-gap: 0.85rem;
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+    }
+
+    .shell-nav .nav-message {
+      order: -1;
+      width: 100%;
+    }
+
+    .shell-nav .links {
+      gap: 1.35rem;
+      row-gap: 0.7rem;
+      flex-wrap: wrap;
+    }
   }
 
   .shell-intro {
@@ -1626,7 +1643,7 @@
 
 <div class="shell-intro">
   <p class="eyebrow">Thomas Jockin is a type designer, educator, writer, and founder of TypeThursday.</p>
-  <h1>Technology should make us more human, not less — in typefaces built for how people read, <em>in the argument for why judgment still matters,</em> and in a room of people who still show up to practice it.</h1>
+  <h1>Technology should make us more human, not less — in typefaces built for how people read, <em>in the inquiry for why judgment still matters,</em> and in spaces to witness the Beautiful.</h1>
   <div class="hero-cta-row">
     <img src="images/tj-photo.webp" alt="Thomas Jockin" class="hero-photo" width="320" height="320">
     <div class="hero-cta-group">
@@ -1868,7 +1885,7 @@
   <div class="msg-inner">
     <p class="msg-eyebrow">Message Thomas</p>
     <h2>Have a project, question, or idea? Send it over.</h2>
-    <form class="msg-form" action="mailto:thomas@thomasjockin.com" method="post" enctype="text/plain">
+    <form class="msg-form" id="msg-form">
       <div class="msg-field">
         <label for="msg-name">Name</label>
         <input type="text" id="msg-name" name="Name" placeholder="Your name" required>
@@ -1886,6 +1903,26 @@
     </form>
   </div>
 </section>
+
+<script>
+  (function () {
+    const form = document.getElementById('msg-form');
+    if (!form) return;
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('msg-name').value.trim();
+      const email = document.getElementById('msg-email').value.trim();
+      const message = document.getElementById('msg-message').value.trim();
+
+      const subject = `Message from ${name} via thomasjockin.com`;
+      const body =
+        `Hi Thomas,\n\n${message}\n\n—\n${name}\n${email}`;
+
+      const mailto = `mailto:thomas@thomasjockin.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      window.location.href = mailto;
+    });
+  })();
+</script>
 
 <footer class="shell-footer">
   <div class="shell-footer-social">
@@ -2546,7 +2583,7 @@ const BADGE_IMAGES = [
     // than a portrait badge's own OVERSIZE alone. Reserve edge margin
     // for that worst case so wide landscape badges in edge columns
     // don't get clipped by the canvas.
-    const overshoot = (OVERSIZE / ASPECT - 1) / 2; // fraction of a cell each edge badge can overhang, worst case
+    const overshoot = (OVERSIZE - 1) / 2; // fraction of a cell each edge badge overhangs by default (portrait case)
     const cellW = (wrapWidth - gap * (numCols - 1)) / (numCols + overshoot * 2);
     const xOffset = cellW * overshoot;
     const cellH = cellW / ASPECT;
@@ -2596,8 +2633,24 @@ const BADGE_IMAGES = [
       const imgW = b.imgW || bwBase;
       const imgH = b.imgH || (bwBase / ASPECT);
       const fitScale = Math.min(boxSize / imgW, boxSize / imgH);
-      const bw = imgW * fitScale;
-      const bh = imgH * fitScale;
+      let bw = imgW * fitScale;
+      let bh = imgH * fitScale;
+
+      // Landscape badges can be noticeably wider than a standard cell
+      // (see the square-box note above). That's fine in the middle of
+      // the grid where neighbors have gaps to spare, but at the very
+      // left/right edge of the canvas it would clip. Only clamp those
+      // specific edge-column cases, rather than shrinking the whole
+      // grid's cell size to cover a worst case that mostly doesn't
+      // apply — that approach previously inflated the reserved space
+      // around the center CTA into an oversized, awkward gap.
+      const edgeSafety = 6; // px buffer so rotated corners don't graze the edge
+      const maxHalfW = Math.min(px, wrapWidth - px) - edgeSafety;
+      if (maxHalfW > 0 && bw / 2 > maxHalfW) {
+        const clampScale = (maxHalfW * 2) / bw;
+        bw *= clampScale;
+        bh *= clampScale;
+      }
 
       const organicTiltDeg = (seededRand(b.index, 3) - 0.5) * 8;
       const rotationDeg = organicTiltDeg + (b.meta.rotationDeg || 0);
