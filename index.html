@@ -79,7 +79,6 @@
     height: var(--nav-h);
     display: flex;
     align-items: center;
-    justify-content: space-between;
     padding: 0 clamp(1.25rem, 4vw, 3rem);
     background: rgba(14,14,13,0.86);
     backdrop-filter: blur(10px);
@@ -94,31 +93,25 @@
   }
 
   .shell-nav .nav-message {
-    text-decoration: none;
-    font-size: 0.78rem;
-    font-weight: 500;
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
     color: var(--shell-ink-soft);
-    transition: color 0.15s ease;
-    padding: 4px 2px;
-    flex-shrink: 0;
-  }
-
-  .shell-nav .nav-message:hover,
-  .shell-nav .nav-message:focus-visible { color: var(--shell-ink); }
-
-  .shell-nav .nav-message:focus-visible {
-    outline: 1px solid var(--shell-ink);
-    outline-offset: 4px;
   }
 
   .shell-nav .links {
     display: flex;
+    align-items: center;
     gap: clamp(1rem, 3vw, 2.25rem);
     list-style: none;
     margin: 0;
     padding: 0;
+    width: 100%;
+  }
+
+  /* Pushes everything from "A Font That Fits to You" onward to the
+     right, leaving Message Thomas alone on the left — same visual
+     split as before, but as one wrapping list instead of two
+     separate flex children (which couldn't wrap together). */
+  .shell-nav .links-split {
+    margin-left: auto;
   }
 
   .shell-nav .links a {
@@ -130,6 +123,7 @@
     color: var(--shell-ink-soft);
     transition: color 0.15s ease;
     padding: 4px 2px;
+    white-space: nowrap;
   }
 
   .shell-nav .links a:hover,
@@ -143,21 +137,23 @@
   @media (max-width: 640px) {
     .shell-nav {
       height: auto;
-      flex-wrap: wrap;
-      row-gap: 0.85rem;
-      padding-top: 1rem;
-      padding-bottom: 1rem;
-    }
-
-    .shell-nav .nav-message {
-      order: -1;
-      width: 100%;
+      padding-top: 0.65rem;
+      padding-bottom: 0.65rem;
     }
 
     .shell-nav .links {
-      gap: 1.35rem;
-      row-gap: 0.7rem;
       flex-wrap: wrap;
+      row-gap: 0.4rem;
+      column-gap: 0.9rem;
+    }
+
+    .shell-nav .links-split {
+      margin-left: 0; /* no left/right split on mobile — just wrap in order */
+    }
+
+    .shell-nav .links a {
+      font-size: 0.7rem;
+      white-space: normal;
     }
   }
 
@@ -1633,9 +1629,9 @@
 <body>
 
 <nav class="shell-nav">
-  <a href="mailto:thomas@thomasjockin.com" class="nav-message">Message Thomas</a>
   <ul class="links">
-    <li><a href="#readex">A Font That Fits to You</a></li>
+    <li><a href="mailto:thomas@thomasjockin.com" class="nav-message">Message Thomas</a></li>
+    <li class="links-split"><a href="#readex">A Font That Fits to You</a></li>
     <li><a href="#to-kalon">Thought Leadership</a></li>
     <li><a href="#type-thursday">Third Spaces</a></li>
   </ul>
@@ -2577,24 +2573,40 @@ const BADGE_IMAGES = [
     const numCols = computeCols(wrapWidth);
     const gap = Math.max(8, wrapWidth * 0.01);
     const OVERSIZE = 1.08; // slight oversize for a bit of sticker-sheet overlap, not enough to hurt legibility
+
     // Badges are drawn within a square box sized off cell HEIGHT (see
     // the per-badge sizing below), so a landscape badge can be up to
     // (OVERSIZE/ASPECT) of a cell's width — noticeably more overhang
-    // than a portrait badge's own OVERSIZE alone. Reserve edge margin
-    // for that worst case so wide landscape badges in edge columns
-    // don't get clipped by the canvas.
-    const overshoot = (OVERSIZE - 1) / 2; // fraction of a cell each edge badge overhangs by default (portrait case)
+    // than a portrait badge's own OVERSIZE alone. We need a bigger
+    // safety margin than a plain portrait badge would require.
+    //
+    // That margin has to apply uniformly to every column, not just
+    // the outer edges — on narrow (mobile) layouts with only 3
+    // columns, 2 of every 3 badges ARE an edge column, so clamping
+    // only those specific badges made them inconsistently smaller
+    // than their neighbors instead of applying one even margin.
+    //
+    // The reserved-cell-count math for the center CTA card is kept
+    // separate, using a "nominal" (small-margin) cell size — reusing
+    // the same larger safety margin there would inflate the CTA's
+    // reserved footprint far beyond its actual size, leaving an
+    // oversized blank gap around it.
+    const nominalOvershoot = (OVERSIZE - 1) / 2;
+    const nominalCellW = (wrapWidth - gap * (numCols - 1)) / (numCols + nominalOvershoot * 2);
+    const nominalCellH = nominalCellW / ASPECT;
+
+    const overshoot = (OVERSIZE / ASPECT - 1) / 2; // fraction of a cell every badge can safely overhang
     const cellW = (wrapWidth - gap * (numCols - 1)) / (numCols + overshoot * 2);
     const xOffset = cellW * overshoot;
     const cellH = cellW / ASPECT;
     const bwBase = cellW * OVERSIZE;
 
     // Reserve enough cells for #centerCta based on its actual rough
-    // footprint (~230x170 CSS px), sized in terms of THIS layout's
-    // cell size rather than a fixed cell count, so it holds up across
-    // the responsive column breakpoints above.
-    const reservedCols = Math.min(numCols - 1, Math.max(2, Math.ceil(230 / (cellW + gap))));
-    const reservedRows = Math.max(2, Math.ceil(170 / (cellH + gap)));
+    // footprint (~230x170 CSS px), sized against the nominal cell
+    // size (not the safety-margined one) so it holds up across the
+    // responsive column breakpoints above without over-reserving.
+    const reservedCols = Math.min(numCols - 1, Math.max(2, Math.ceil(230 / (nominalCellW + gap))));
+    const reservedRows = Math.max(2, Math.ceil(170 / (nominalCellH + gap)));
     const totalCells = ordered.length + reservedCols * reservedRows;
     const numRows = Math.max(reservedRows, Math.ceil(totalCells / numCols));
     const startReservedCol = Math.floor((numCols - reservedCols) / 2);
@@ -2633,24 +2645,8 @@ const BADGE_IMAGES = [
       const imgW = b.imgW || bwBase;
       const imgH = b.imgH || (bwBase / ASPECT);
       const fitScale = Math.min(boxSize / imgW, boxSize / imgH);
-      let bw = imgW * fitScale;
-      let bh = imgH * fitScale;
-
-      // Landscape badges can be noticeably wider than a standard cell
-      // (see the square-box note above). That's fine in the middle of
-      // the grid where neighbors have gaps to spare, but at the very
-      // left/right edge of the canvas it would clip. Only clamp those
-      // specific edge-column cases, rather than shrinking the whole
-      // grid's cell size to cover a worst case that mostly doesn't
-      // apply — that approach previously inflated the reserved space
-      // around the center CTA into an oversized, awkward gap.
-      const edgeSafety = 6; // px buffer so rotated corners don't graze the edge
-      const maxHalfW = Math.min(px, wrapWidth - px) - edgeSafety;
-      if (maxHalfW > 0 && bw / 2 > maxHalfW) {
-        const clampScale = (maxHalfW * 2) / bw;
-        bw *= clampScale;
-        bh *= clampScale;
-      }
+      const bw = imgW * fitScale;
+      const bh = imgH * fitScale;
 
       const organicTiltDeg = (seededRand(b.index, 3) - 0.5) * 8;
       const rotationDeg = organicTiltDeg + (b.meta.rotationDeg || 0);
