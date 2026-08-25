@@ -2496,6 +2496,8 @@ const BADGE_IMAGES = [
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
       b.texture = tex;
       b.aspect = img.naturalWidth / img.naturalHeight; // some badges are landscape, not all portrait
+      b.imgW = img.naturalWidth;
+      b.imgH = img.naturalHeight;
       b.ready = true;
       loadedCount++;
       if (loadedCount === badges.length) layout();
@@ -2538,12 +2540,13 @@ const BADGE_IMAGES = [
     const numCols = computeCols(wrapWidth);
     const gap = Math.max(8, wrapWidth * 0.01);
     const OVERSIZE = 1.08; // slight oversize for a bit of sticker-sheet overlap, not enough to hurt legibility
-    // Badges are drawn OVERSIZE× their cell, so the edge columns would
-    // overhang past the canvas and get clipped by it. Reserve a margin
-    // on both sides equal to that overshoot, and fit the grid columns
-    // inside the remaining width so oversized edge badges still land
-    // fully inside the canvas.
-    const overshoot = (OVERSIZE - 1) / 2; // fraction of a cell each edge badge overhangs
+    // Badges are drawn within a square box sized off cell HEIGHT (see
+    // the per-badge sizing below), so a landscape badge can be up to
+    // (OVERSIZE/ASPECT) of a cell's width — noticeably more overhang
+    // than a portrait badge's own OVERSIZE alone. Reserve edge margin
+    // for that worst case so wide landscape badges in edge columns
+    // don't get clipped by the canvas.
+    const overshoot = (OVERSIZE / ASPECT - 1) / 2; // fraction of a cell each edge badge can overhang, worst case
     const cellW = (wrapWidth - gap * (numCols - 1)) / (numCols + overshoot * 2);
     const xOffset = cellW * overshoot;
     const cellH = cellW / ASPECT;
@@ -2582,17 +2585,19 @@ const BADGE_IMAGES = [
       const px = xOffset + col * (cellW + gap) + cellW / 2;
       const py = row * (cellH + gap) + cellH / 2;
 
-      // Fit this badge's own image within the cell (contain, not
-      // stretch) — badges vary between portrait and landscape source
-      // art, so a single shared bw/bh would distort whichever
-      // orientation doesn't match the default.
-      const badgeAspect = b.aspect || ASPECT;
-      let bw = bwBase;
-      let bh = bw / badgeAspect;
-      if (bh > cellH * OVERSIZE) {
-        bh = cellH * OVERSIZE;
-        bw = bh * badgeAspect;
-      }
+      // Fit this badge's own image within a SQUARE box (not the tall
+      // portrait-shaped cell rectangle) — portrait and landscape
+      // badges here are mirror-image aspect ratios (0.75 vs 1.333),
+      // so a square containing box gives both exactly equal area.
+      // Fitting landscape badges into the narrower rectangular cell
+      // instead under-filled them, making them look smaller than
+      // every portrait badge for no reason other than orientation.
+      const boxSize = cellH * OVERSIZE;
+      const imgW = b.imgW || bwBase;
+      const imgH = b.imgH || (bwBase / ASPECT);
+      const fitScale = Math.min(boxSize / imgW, boxSize / imgH);
+      const bw = imgW * fitScale;
+      const bh = imgH * fitScale;
 
       const organicTiltDeg = (seededRand(b.index, 3) - 0.5) * 8;
       const rotationDeg = organicTiltDeg + (b.meta.rotationDeg || 0);
