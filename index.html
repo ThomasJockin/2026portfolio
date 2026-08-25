@@ -2574,6 +2574,16 @@ const BADGE_IMAGES = [
     const gap = Math.max(8, wrapWidth * 0.01);
     const OVERSIZE = 1.08; // slight oversize for a bit of sticker-sheet overlap, not enough to hurt legibility
 
+    // Measure the CTA card's real rendered size instead of guessing a
+    // fixed 230x170px — its CSS width is min(280px, 62%), so on
+    // narrow mobile widths the real card is noticeably smaller than
+    // that guess assumed, which was reserving more grid space than
+    // the card actually needed and leaving a mismatched blank gap
+    // around it.
+    const ctaElEarly = document.getElementById('centerCta');
+    const ctaFootprintW = ctaElEarly ? ctaElEarly.offsetWidth : 230;
+    const ctaFootprintH = ctaElEarly ? ctaElEarly.offsetHeight : 170;
+
     // Badges are drawn within a square box sized off cell HEIGHT (see
     // the per-badge sizing below), so a landscape badge can be up to
     // (OVERSIZE/ASPECT) of a cell's width — noticeably more overhang
@@ -2605,12 +2615,11 @@ const BADGE_IMAGES = [
     // footprint (~230x170 CSS px), sized against the nominal cell
     // size (not the safety-margined one) so it holds up across the
     // responsive column breakpoints above without over-reserving.
-    const reservedCols = Math.min(numCols - 1, Math.max(2, Math.ceil(230 / (nominalCellW + gap))));
-    const reservedRows = Math.max(2, Math.ceil(170 / (nominalCellH + gap)));
-    const totalCells = ordered.length + reservedCols * reservedRows;
+    const ctaPadding = 10; // a little breathing room around the real card — must match the test below
+    const reservedRows = Math.max(2, Math.ceil(ctaFootprintH / (nominalCellH + gap)));
+    const reservedColsEstimate = Math.min(numCols, Math.max(2, Math.ceil((ctaFootprintW + ctaPadding * 2) / (nominalCellW + gap))));
+    const totalCells = ordered.length + reservedColsEstimate * (reservedRows + 1); // +1 row of buffer against rounding
     const numRows = Math.max(reservedRows, Math.ceil(totalCells / numCols));
-    const startReservedCol = Math.floor((numCols - reservedCols) / 2);
-    const startReservedRow = Math.floor((numRows - reservedRows) / 2);
 
     const cssHeight = numRows * cellH + (numRows - 1) * gap;
     canvas.style.height = cssHeight + 'px';
@@ -2618,21 +2627,40 @@ const BADGE_IMAGES = [
     canvas.height = Math.round(cssHeight * dpr);
     gl.viewport(0, 0, canvas.width, canvas.height);
 
+    // The CTA card is centered via CSS (left/top: 50%) within this
+    // same wrapper, so its true rectangle is derivable directly —
+    // checking candidate cells against this real rectangle (instead
+    // of approximating it with a column/row count) can't drift out
+    // of alignment with where the card actually renders, at any
+    // column count.
+    const ctaHalfW = ctaFootprintW / 2 + ctaPadding;
+    const ctaHalfH = ctaFootprintH / 2 + ctaPadding;
+    const ctaCenterX = wrapWidth / 2;
+    const ctaCenterY = cssHeight / 2;
+
     let cellIndex = 0;
     const maxCells = numCols * numRows;
     ordered.forEach((b) => {
-      let row = 0, col = 0;
+      let row = 0, col = 0, px = 0, py = 0;
+      let placed = false;
       while (cellIndex < maxCells) {
         row = Math.floor(cellIndex / numCols);
         col = cellIndex % numCols;
         cellIndex++;
-        const inReserved = col >= startReservedCol && col < startReservedCol + reservedCols
-          && row >= startReservedRow && row < startReservedRow + reservedRows;
-        if (!inReserved) break;
+        px = xOffset + col * (cellW + gap) + cellW / 2;
+        py = row * (cellH + gap) + cellH / 2;
+        const inReserved = Math.abs(px - ctaCenterX) < ctaHalfW && Math.abs(py - ctaCenterY) < ctaHalfH;
+        if (!inReserved) { placed = true; break; }
       }
-
-      const px = xOffset + col * (cellW + gap) + cellW / 2;
-      const py = row * (cellH + gap) + cellH / 2;
+      if (!placed) {
+        // Safety net only — the cell-count estimate above already
+        // includes a buffer row specifically to avoid this, but
+        // guarantee every badge still renders somewhere visible
+        // rather than silently vanishing if it's ever exceeded.
+        row = numRows; col = b.index % numCols;
+        px = xOffset + col * (cellW + gap) + cellW / 2;
+        py = row * (cellH + gap) + cellH / 2;
+      }
 
       // Fit this badge's own image within a SQUARE box (not the tall
       // portrait-shaped cell rectangle) — portrait and landscape
