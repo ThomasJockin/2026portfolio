@@ -79,7 +79,7 @@
     height: var(--nav-h);
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
     padding: 0 clamp(1.25rem, 4vw, 3rem);
     background: rgba(14,14,13,0.86);
     backdrop-filter: blur(10px);
@@ -1247,10 +1247,13 @@
     position: relative;
     padding: clamp(1.5rem, 4vw, 2.5rem) 0.5rem;
     margin-bottom: clamp(2.5rem, 6vw, 3.5rem);
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.4rem 1.1rem;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.2rem 0.8rem;
+  }
+
+  @media (max-width: 420px) {
+    .flyer-board { gap: 0.8rem 0.5rem; }
   }
 
   .flyer {
@@ -1258,8 +1261,8 @@
     border: 1px solid var(--section-line);
     box-shadow: 3px 4px 0 rgba(23,19,15,0.08);
     padding: 0 0 1.2rem;
-    flex: 0 1 180px;
-    min-width: 180px;
+    width: 100%;
+    min-width: 0;
     font-family: 'JetBrains Mono', monospace;
     text-decoration: none;
     color: var(--section-ink);
@@ -1503,7 +1506,6 @@
 <body>
 
 <nav class="shell-nav">
-  <span class="name">Thomas Jockin</span>
   <ul class="links">
     <li><a href="#readex">A Font That Fits to You</a></li>
     <li><a href="#to-kalon">Thought Leadership</a></li>
@@ -2313,22 +2315,22 @@ const BADGE_IMAGES = [
   const BADGE_META = [
     { code: 'CDMX', estYear: 2020, rotationDeg: 0 },
     { code: 'LA',   estYear: 2016, rotationDeg: 0 },
-    { code: 'FLR',  estYear: 2018, rotationDeg: 90 },
+    { code: 'FLR',  estYear: 2018, rotationDeg: 0 },
     { code: 'PHL',  estYear: 2018, rotationDeg: 0 },
     { code: 'BER',  estYear: 2019, rotationDeg: 0 },
     { code: 'ATL',  estYear: 2024, rotationDeg: 0 },
-    { code: 'LON',  estYear: 2017, rotationDeg: 90 },
+    { code: 'LON',  estYear: 2017, rotationDeg: 0 },
     { code: 'EVN',  estYear: 2021, rotationDeg: 0 },
-    { code: 'CHI',  estYear: 2017, rotationDeg: 90 },
+    { code: 'CHI',  estYear: 2017, rotationDeg: 0 },
     { code: 'MSK',  estYear: 2021, rotationDeg: 0 },
-    { code: 'BOG',  estYear: 2019, rotationDeg: 90 },
-    { code: 'BCN',  estYear: 2021, rotationDeg: 90 },
+    { code: 'BOG',  estYear: 2019, rotationDeg: 0 },
+    { code: 'BCN',  estYear: 2021, rotationDeg: 0 },
     { code: 'SF',   estYear: 2016, rotationDeg: 0 },
     { code: 'NYC',  estYear: 2015, rotationDeg: 0 }, // flagship badge
     { code: 'SEA',  estYear: 2017, rotationDeg: 0 },
-    { code: 'TBS',  estYear: 2022, rotationDeg: 90 }, // corrective fix
+    { code: 'TBS',  estYear: 2022, rotationDeg: 0 },
     { code: 'MAD',  estYear: 2020, rotationDeg: 0 },
-    { code: 'BUC',  estYear: 2019, rotationDeg: 90 },
+    { code: 'BUC',  estYear: 2019, rotationDeg: 0 },
     { code: 'PHX',  estYear: 2025, rotationDeg: 0 },
     { code: 'MLN',  estYear: 2022, rotationDeg: 0 },
   ];
