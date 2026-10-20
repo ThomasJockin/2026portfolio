@@ -16,6 +16,9 @@ const TYPES = {
   'other': 'Something else',
 };
 
+const TYPE_TAGS = { 'type-project': 'Type project', speaking: 'Speaking', funding: 'Funding', other: 'Inquiry' };
+const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
 const LIMITS = { name: 120, email: 254, organization: 160, message: 5000, detail: 300 };
 
 const DESCRIPTION = {
@@ -109,19 +112,49 @@ module.exports = async function handler(req, res) {
   // Durable fallback record (visible in Vercel runtime logs).
   console.log('INQUIRY ' + JSON.stringify({ id, via, ip, ...data }));
 
-  const lines = [
-    `Type: ${TYPES[data.type]}`,
-    `Name: ${data.name}`,
-    `Email: ${data.email}`,
-    data.organization && `Organization: ${data.organization}`,
-    data.timeline && `Timeline: ${data.timeline}`,
-    data.budget && `Budget: ${data.budget}`,
-    data.script && `Script: ${data.script}`,
+  const subject = `${TYPE_TAGS[data.type]}: ${data.name}${data.organization ? ' (' + data.organization + ')' : ''}`;
+  const replySubject = 'Re: ' + TYPES[data.type] + ' — thomasjockin.com';
+  const replyHref = `mailto:${data.email}?subject=${encodeURIComponent(replySubject)}&body=${encodeURIComponent('Hi ' + data.name.split(' ')[0] + ',\n\n')}`;
+  const details = [
+    ['Topic', TYPES[data.type]],
+    ['Organization', data.organization],
+    ['Timeline', data.timeline],
+    ['Budget', data.budget],
+    ['Script', data.script],
+  ].filter(([, v]) => v);
+
+  const text = [
+    `NEW INQUIRY: ${TYPES[data.type]}`,
     '',
+    `From: ${data.name} <${data.email}>`,
+    ...details.filter(([k]) => k !== 'Topic').map(([k, v]) => `${k}: ${v}`),
+    '',
+    'MESSAGE',
     data.message,
     '',
-    `Reference: ${id} (${via}). Reply to this email to answer ${data.name}.`,
-  ].filter((l) => l !== '' ? Boolean(l) : true);
+    `Reply to this email to answer ${data.name} (Reply-To is set to ${data.email}).`,
+    `Ref ${id} via ${via}`,
+  ].join('\n');
+
+  const rows = details.map(([k, v]) =>
+    `<tr><td style="padding:4px 16px 4px 0;color:#6b6b66;font-size:13px;white-space:nowrap;vertical-align:top">${esc(k)}</td><td style="padding:4px 0;font-size:14px;color:#14161a">${esc(v)}</td></tr>`).join('');
+
+  const html = `<!doctype html><html><body style="margin:0;padding:0;background:#f4f2ec">
+<div style="max-width:560px;margin:0 auto;padding:20px 16px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#14161a">
+  <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#6b6b66;margin-bottom:6px">New inquiry · thomasjockin.com</div>
+  <div style="font-size:22px;font-weight:600;line-height:1.25;margin-bottom:16px">${esc(TYPES[data.type])}</div>
+  <div style="background:#ffffff;border:1px solid #d6d2c4;border-radius:6px;padding:16px;margin-bottom:12px">
+    <div style="font-size:16px;font-weight:600">${esc(data.name)}</div>
+    <div style="font-size:14px;margin:2px 0 12px"><a href="mailto:${esc(data.email)}" style="color:#1f5f4e">${esc(data.email)}</a></div>
+    <table role="presentation" style="border-collapse:collapse">${rows}</table>
+  </div>
+  <div style="background:#ffffff;border:1px solid #d6d2c4;border-left:3px solid #1f5f4e;border-radius:6px;padding:16px;margin-bottom:16px">
+    <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#6b6b66;margin-bottom:8px">Message</div>
+    <div style="font-size:15px;line-height:1.55;white-space:pre-wrap">${esc(data.message)}</div>
+  </div>
+  <a href="${replyHref}" style="display:inline-block;background:#14161a;color:#f4f2ec;text-decoration:none;font-size:15px;font-weight:600;padding:12px 20px;border-radius:999px">Reply to ${esc(data.name.split(' ')[0])}</a>
+  <div style="font-size:12px;color:#8a8a84;margin-top:20px;line-height:1.5">Or just hit Reply: it goes to ${esc(data.email)}.<br>Ref ${esc(id)} · sent via ${esc(via)}</div>
+</div></body></html>`;
 
   try {
     const key = process.env.RESEND_API_KEY;
@@ -133,8 +166,9 @@ module.exports = async function handler(req, res) {
         from: FROM,
         to: [TO],
         reply_to: data.email,
-        subject: `[${TYPES[data.type]}] ${data.name} via thomasjockin.com`,
-        text: lines.join('\n'),
+        subject,
+        text,
+        html,
       }),
     });
     if (!r.ok) {
