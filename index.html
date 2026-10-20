@@ -212,26 +212,39 @@
   }
 
   @media (max-width: 640px) {
+    html { scroll-padding-top: 6rem; }
+
     .shell-nav {
       height: auto;
-      padding-top: 0.65rem;
-      padding-bottom: 0.65rem;
+      padding: 0 clamp(1.25rem, 4vw, 3rem);
     }
 
+    /* 2x2 grid: aligned columns, 44px-tall tap targets, no ragged wrapping */
     .shell-nav .links {
-      flex-wrap: wrap;
-      row-gap: 0.4rem;
-      column-gap: 0.9rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 1rem;
     }
 
-    .shell-nav .links-split {
-      margin-left: 0; /* no left/right split on mobile — just wrap in order */
+    .shell-nav .links li { min-width: 0; }
+
+    .shell-nav .links li:nth-child(-n+2) {
+      border-bottom: 1px solid rgba(242,241,236,0.08);
     }
+
+    .shell-nav .links-split { margin-left: 0; }
 
     .shell-nav .links a {
+      display: flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 0;
       font-size: 0.7rem;
+      line-height: 1.25;
       white-space: normal;
     }
+
+    .shell-nav .links a.nav-message { color: var(--shell-ink); }
   }
 
   .shell-intro {
