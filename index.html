@@ -24,17 +24,94 @@
 
 <script type="application/ld+json">
 {
-  "@context": "https://schema.org",
-  "@type": "Book",
-  "name": "A Philosophy of Glimpses",
-  "author": [
-    { "@type": "Person", "name": "Thomas Jockin" },
-    { "@type": "Person", "name": "O.G. Rose" },
-    { "@type": "Person", "name": "Javier Rivera" }
-  ],
-  "url": "https://www.amazon.com/dp/1736507516",
-  "image": "https://www.thomasjockin.com/images/book-cover-glimpses.webp",
-  "about": "Beauty, memory, and phenomenology"
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "WebSite",
+   "@id": "https://www.thomasjockin.com/#website",
+   "url": "https://www.thomasjockin.com/",
+   "name": "Thomas Jockin",
+   "publisher": {
+    "@id": "https://www.thomasjockin.com/#person"
+   }
+  },
+  {
+   "@type": "Person",
+   "@id": "https://www.thomasjockin.com/#person",
+   "name": "Thomas Jockin",
+   "url": "https://www.thomasjockin.com/",
+   "image": "https://www.thomasjockin.com/images/tj-photo.webp",
+   "jobTitle": "Type designer, educator, writer, and founder of TypeThursday",
+   "email": "mailto:thomas@thomasjockin.com",
+   "description": "Type designer, educator, and writer. Co-creator of Lexend, creator of Readex, co-author of A Philosophy of Glimpses, and founder of TypeThursday.",
+   "knowsAbout": [
+    "Type design",
+    "Variable fonts",
+    "Reading-focused typography",
+    "Multiscript typography",
+    "Typographic education",
+    "Beauty and judgment in the age of AI"
+   ],
+   "sameAs": [
+    "https://www.linkedin.com/in/jockinthebox/",
+    "https://x.com/ThomasJockin",
+    "https://www.instagram.com/jockinthebox/",
+    "https://www.youtube.com/@jockt967"
+   ]
+  },
+  {
+   "@type": "Organization",
+   "@id": "https://www.thomasjockin.com/#typethursday",
+   "name": "TypeThursday",
+   "description": "A global, chapter-based typography community that meets in person monthly in nearly 20 cities worldwide. It began as a handful of people meeting in a Brooklyn bar to critique letterforms.",
+   "founder": {
+    "@id": "https://www.thomasjockin.com/#person"
+   }
+  },
+  {
+   "@type": "Service",
+   "@id": "https://www.thomasjockin.com/#service-type",
+   "name": "Custom type design and typography consulting",
+   "serviceType": "Type design",
+   "provider": {
+    "@id": "https://www.thomasjockin.com/#person"
+   },
+   "description": "Custom type systems, variable fonts, reading-focused typography, and multiscript projects for organizations. Past clients include Google, Express, Footlocker, and Michael Kors.",
+   "url": "https://www.thomasjockin.com/#services"
+  },
+  {
+   "@type": "Service",
+   "@id": "https://www.thomasjockin.com/#service-speaking",
+   "name": "Guest lectures, workshops, and design education events",
+   "serviceType": "Speaking and teaching",
+   "provider": {
+    "@id": "https://www.thomasjockin.com/#person"
+   },
+   "description": "Guest lectures, workshops, faculty programming, and design education events, virtual or in person. Has taught at CUNY Queens College, CUNY City College, and SUNY Fashion Institute of Technology.",
+   "url": "https://www.thomasjockin.com/#services"
+  },
+  {
+   "@type": "Book",
+   "@id": "https://www.thomasjockin.com/#book",
+   "name": "A Philosophy of Glimpses",
+   "author": [
+    {
+     "@id": "https://www.thomasjockin.com/#person"
+    },
+    {
+     "@type": "Person",
+     "name": "O.G. Rose"
+    },
+    {
+     "@type": "Person",
+     "name": "Javier Rivera"
+    }
+   ],
+   "url": "https://www.amazon.com/dp/1736507516",
+   "image": "https://www.thomasjockin.com/images/book-cover-glimpses.webp",
+   "about": "Beauty, memory, and phenomenology"
+  }
+ ]
 }
 </script>
 
@@ -1624,6 +1701,12 @@
   .shell-footer-social a:focus-visible {
     color: var(--shell-ink);
   }
+
+  .svc-list { margin: 1.5rem 0 0; }
+  .svc-list dt { font-weight: 600; margin: 1.5rem 0 0.35rem; }
+  .svc-list dd { margin: 0; color: var(--shell-ink-soft); line-height: 1.6; }
+  .svc-list a, .svc-note a { color: var(--shell-ink); text-underline-offset: 3px; }
+  .svc-note { margin: 2rem 0 0; font-size: 0.85rem; color: var(--shell-ink-soft); }
 </style>
 </head>
 <body>
@@ -1874,6 +1957,26 @@
       </a>
     </div>
     <div id="fallbackGrid"></div>
+  </div>
+</section>
+
+<section class="msg-section" id="services" aria-labelledby="services-h">
+  <div class="msg-inner">
+    <p class="msg-eyebrow">Work with Thomas</p>
+    <h2 id="services-h">Ways to work together</h2>
+    <dl class="svc-list">
+      <dt>Type design and typography</dt>
+      <dd>Custom type systems, variable fonts, reading-focused typography, and multiscript projects for organizations. Past clients include Google, Express, Footlocker, and Michael Kors. <a href="mailto:thomas@thomasjockin.com?subject=Type%20project%20inquiry">Discuss a type project</a>.</dd>
+      <dt>Speaking, workshops, and teaching</dt>
+      <dd>Guest lectures, workshops, faculty programming, and design education events, virtual or in person. Thomas has taught at CUNY Queens College, CUNY City College, and SUNY Fashion Institute of Technology. <a href="mailto:thomas@thomasjockin.com?subject=Speaking%20inquiry">Invite Thomas</a>.</dd>
+      <dt>Readex script funding</dt>
+      <dd>Readex, the open-source world-script expansion of Lexend, has $350,000 raised of $756,000. Latin and Arabic are funded; Hangul, Armenian, Cyrillic, Greek, Tamil, and N. American scripts still need funding. <a href="mailto:thomas@thomasjockin.com?subject=Readex%20script%20funding%20inquiry">Ask about funding a script</a>.</dd>
+      <dt>Thought leadership</dt>
+      <dd>A Philosophy of Glimpses, co-authored with O.G. Rose and Javier Rivera, and essays on beauty, judgment, and technology. <a href="https://www.amazon.com/dp/1736507516">Read the book</a>.</dd>
+      <dt>TypeThursday</dt>
+      <dd>A monthly, in-person typography meetup in nearly 20 cities worldwide, founded by Thomas.</dd>
+    </dl>
+    <p class="svc-note">For a plain-text summary, see <a href="/llms.txt">llms.txt</a>. Contact: <a href="mailto:thomas@thomasjockin.com">thomas@thomasjockin.com</a>.</p>
   </div>
 </section>
 
