@@ -1,12 +1,13 @@
 // POST /api/inquiry  — receive a project/speaking/funding inquiry and email it to Thomas.
 // GET  /api/inquiry  — machine-readable description of the endpoint (for agents).
 //
-// Delivery uses Resend (env var RESEND_API_KEY). Until a sending domain is verified in Resend,
-// Resend only delivers to the account owner's address, which is what INQUIRY_TO_EMAIL should be.
+// Delivery uses Resend (env var RESEND_API_KEY) with the verified thomasjockin.com domain.
+// Optional env vars: INQUIRY_TO_EMAIL (recipient), INQUIRY_FROM (sender).
 // Every valid inquiry is also written to the Vercel runtime logs so nothing is lost if email fails.
 
 const SITE = 'https://www.thomasjockin.com';
 const TO = process.env.INQUIRY_TO_EMAIL || 'thomas@thomasjockin.com';
+const FROM = process.env.INQUIRY_FROM || 'thomasjockin.com <inquiries@thomasjockin.com>';
 
 const TYPES = {
   'type-project': 'Type design / typography project',
@@ -129,7 +130,7 @@ module.exports = async function handler(req, res) {
       method: 'POST',
       headers: { Authorization: 'Bearer ' + key, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        from: 'thomasjockin.com <onboarding@resend.dev>',
+        from: FROM,
         to: [TO],
         reply_to: data.email,
         subject: `[${TYPES[data.type]}] ${data.name} via thomasjockin.com`,
