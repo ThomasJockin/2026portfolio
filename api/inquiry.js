@@ -1,9 +1,9 @@
 // POST /api/inquiry  — receive a project/speaking/funding inquiry and email it to Thomas.
 // GET  /api/inquiry  — machine-readable description of the endpoint (for agents).
 //
-// Delivery uses FormSubmit (no account). The first real submission triggers a one-time
-// activation email to the recipient address; click it once. Every valid inquiry is also
-// written to the Vercel runtime logs so nothing is lost if email delivery fails.
+// Delivery uses Resend (env var RESEND_API_KEY). Until a sending domain is verified in Resend,
+// Resend only delivers to the account owner's address, which is what INQUIRY_TO_EMAIL should be.
+// Every valid inquiry is also written to the Vercel runtime logs so nothing is lost if email fails.
 
 const SITE = 'https://www.thomasjockin.com';
 const TO = process.env.INQUIRY_TO_EMAIL || 'thomas@thomasjockin.com';
@@ -108,30 +108,38 @@ module.exports = async function handler(req, res) {
   // Durable fallback record (visible in Vercel runtime logs).
   console.log('INQUIRY ' + JSON.stringify({ id, via, ip, ...data }));
 
-  const payload = {
-    _subject: `[${TYPES[data.type]}] ${data.name} via thomasjockin.com`,
-    _replyto: data.email,
-    _template: 'table',
-    _captcha: 'false',
-    Type: TYPES[data.type],
-    Name: data.name,
-    Email: data.email,
-    ...(data.organization && { Organization: data.organization }),
-    ...(data.timeline && { Timeline: data.timeline }),
-    ...(data.budget && { Budget: data.budget }),
-    ...(data.script && { Script: data.script }),
-    Message: data.message,
-    'Reference': id + ' (' + via + ')',
-  };
+  const lines = [
+    `Type: ${TYPES[data.type]}`,
+    `Name: ${data.name}`,
+    `Email: ${data.email}`,
+    data.organization && `Organization: ${data.organization}`,
+    data.timeline && `Timeline: ${data.timeline}`,
+    data.budget && `Budget: ${data.budget}`,
+    data.script && `Script: ${data.script}`,
+    '',
+    data.message,
+    '',
+    `Reference: ${id} (${via}). Reply to this email to answer ${data.name}.`,
+  ].filter((l) => l !== '' ? Boolean(l) : true);
 
   try {
-    const r = await fetch('https://formsubmit.co/ajax/' + encodeURIComponent(TO), {
+    const key = process.env.RESEND_API_KEY;
+    if (!key) throw new Error('RESEND_API_KEY is not set');
+    const r = await fetch('https://api.resend.com/emails', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json', Origin: SITE, Referer: SITE + '/' },
-      body: JSON.stringify(payload),
+      headers: { Authorization: 'Bearer ' + key, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: 'thomasjockin.com <onboarding@resend.dev>',
+        to: [TO],
+        reply_to: data.email,
+        subject: `[${TYPES[data.type]}] ${data.name} via thomasjockin.com`,
+        text: lines.join('\n'),
+      }),
     });
-    const j = await r.json().catch(() => ({}));
-    if (!r.ok || String(j.success) === 'false') throw new Error('delivery ' + r.status + ' ' + (j.message || ''));
+    if (!r.ok) {
+      const j = await r.json().catch(() => ({}));
+      throw new Error('delivery ' + r.status + ' ' + (j.message || j.name || ''));
+    }
   } catch (err) {
     console.error('INQUIRY_DELIVERY_FAILED ' + id + ' ' + err.message);
     return res.status(502).json({
