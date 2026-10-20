@@ -1,0 +1,114 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Thomas Jockin inquiry API",
+    "version": "1.0.0",
+    "description": "Send an inquiry to Thomas Jockin (type designer, educator, writer, founder of TypeThursday). Inquiries are emailed to Thomas, who replies personally. Submitting does not commit anyone to anything."
+  },
+  "servers": [
+    {
+      "url": "https://www.thomasjockin.com"
+    }
+  ],
+  "paths": {
+    "/api/inquiry": {
+      "get": {
+        "operationId": "describeInquiryEndpoint",
+        "summary": "Describe the endpoint",
+        "responses": {
+          "200": {
+            "description": "Endpoint description"
+          }
+        }
+      },
+      "post": {
+        "operationId": "submitInquiry",
+        "summary": "Submit an inquiry to Thomas Jockin",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Inquiry"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Received"
+          },
+          "400": {
+            "description": "Validation error"
+          },
+          "429": {
+            "description": "Too many requests"
+          },
+          "502": {
+            "description": "Delivery failed; use the fallback mailto address"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Inquiry": {
+        "type": "object",
+        "required": [
+          "type",
+          "name",
+          "email",
+          "message"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "type-project",
+              "speaking",
+              "funding",
+              "other"
+            ],
+            "description": "type-project: custom type design or typography; speaking: lectures, workshops, teaching; funding: Readex script funding; other"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Where Thomas should reply"
+          },
+          "message": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 5000
+          },
+          "organization": {
+            "type": "string",
+            "maxLength": 160
+          },
+          "timeline": {
+            "type": "string",
+            "maxLength": 300
+          },
+          "budget": {
+            "type": "string",
+            "maxLength": 300
+          },
+          "script": {
+            "type": "string",
+            "maxLength": 300,
+            "description": "For funding inquiries: which script"
+          },
+          "website": {
+            "type": "string",
+            "description": "Leave empty (anti-spam)"
+          }
+        }
+      }
+    }
+  }
+}
