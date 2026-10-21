@@ -92,11 +92,13 @@
           },
           "timeline": {
             "type": "string",
-            "maxLength": 300
+            "maxLength": 300,
+            "description": "Project timeline, or event date/timeframe for speaking"
           },
           "budget": {
             "type": "string",
-            "maxLength": 300
+            "maxLength": 300,
+            "description": "Budget, honorarium (e.g. '$200 + travel'), or amount being considered for funding"
           },
           "script": {
             "type": "string",
@@ -106,6 +108,11 @@
           "website": {
             "type": "string",
             "description": "Leave empty (anti-spam)"
+          },
+          "format": {
+            "type": "string",
+            "maxLength": 300,
+            "description": "For speaking: In person, Virtual, or blank for either"
           }
         }
       }

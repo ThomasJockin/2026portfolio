@@ -1754,6 +1754,9 @@
   .msg-field select option { background: #0e0e0d; color: #f2f1ec; }
   .msg-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
   .msg-submit:disabled { opacity: 0.6; cursor: progress; }
+
+  .msg-extra { display: flex; flex-direction: column; gap: 1.4rem; }
+  .msg-extra[hidden], .msg-field[hidden] { display: none; }
 </style>
 </head>
 <body>
@@ -2049,6 +2052,36 @@
         <label for="msg-email">Email</label>
         <input type="email" id="msg-email" name="email" placeholder="you@example.com" autocomplete="email" required>
       </div>
+      <div class="msg-extra" id="msg-extra">
+        <div class="msg-field" data-field="organization" hidden>
+          <label for="msg-organization">Organization</label>
+          <input type="text" id="msg-organization" name="organization" autocomplete="organization" maxlength="160">
+        </div>
+        <div class="msg-field" data-field="format" hidden>
+          <label for="msg-format">Format (optional)</label>
+          <select id="msg-format" name="format">
+            <option value="">Either works</option>
+            <option value="In person">In person</option>
+            <option value="Virtual">Virtual</option>
+          </select>
+        </div>
+        <div class="msg-field" data-field="timeline" hidden>
+          <label for="msg-timeline">Timeline</label>
+          <input type="text" id="msg-timeline" name="timeline" maxlength="300">
+        </div>
+        <div class="msg-field" data-field="budget" hidden>
+          <label for="msg-budget">Budget</label>
+          <input type="text" id="msg-budget" name="budget" maxlength="300">
+        </div>
+        <div class="msg-field" data-field="script" hidden>
+          <label for="msg-script">Script (optional)</label>
+          <select id="msg-script" name="script">
+            <option value="">Not sure yet</option>
+            <option>Hangul</option><option>Armenian</option><option>Cyrillic</option>
+            <option>Greek</option><option>Tamil</option><option>N. American</option>
+          </select>
+        </div>
+      </div>
       <div class="msg-field">
         <label for="msg-message">Message</label>
         <textarea id="msg-message" name="message" rows="5" placeholder="What's on your mind?" minlength="10" required></textarea>
@@ -2068,14 +2101,50 @@
     const btn = document.getElementById('msg-submit');
     const label = btn.querySelector('.msg-submit-label');
     const typeSel = document.getElementById('msg-type');
+    const EXTRA = {
+      'type-project': {
+        organization: ['Organization (optional)', 'Company or studio'],
+        timeline: ['Timeline (optional)', 'e.g. launching in Q2 2027'],
+        budget: ['Budget (optional)', 'e.g. $40–60k, or not sure yet'],
+      },
+      speaking: {
+        organization: ['School or organization (optional)', 'e.g. Queens College'],
+        format: true,
+        timeline: ['Date or timeframe (optional)', 'e.g. March 12, or spring semester'],
+        budget: ['Honorarium or budget (optional)', 'e.g. $200 honorarium + travel'],
+      },
+      funding: {
+        organization: ['Organization (optional)', 'Company, foundation, or individual'],
+        script: true,
+        budget: ["Amount you're considering (optional)", 'e.g. $10,000'],
+      },
+      other: {},
+    };
+    const extraBox = document.getElementById('msg-extra');
+    function renderExtras() {
+      const cfg = EXTRA[typeSel.value] || {};
+      extraBox.querySelectorAll('[data-field]').forEach((wrap) => {
+        const key = wrap.getAttribute('data-field');
+        const def = cfg[key];
+        const input = wrap.querySelector('input, select');
+        if (!def) { wrap.hidden = true; input.value = ''; return; }
+        wrap.hidden = false;
+        if (Array.isArray(def)) {
+          wrap.querySelector('label').textContent = def[0];
+          input.placeholder = def[1];
+        }
+      });
+    }
+    typeSel.addEventListener('change', renderExtras);
     const TYPE_LABELS = { 'type-project': 'Type project inquiry', 'speaking': 'Speaking inquiry', 'funding': 'Funding inquiry', 'other': 'Hello from the website' };
 
     // Hero / nav buttons preselect the topic and jump to the form.
     document.querySelectorAll('[data-inquiry-type]').forEach((a) => {
-      a.addEventListener('click', () => { typeSel.value = a.getAttribute('data-inquiry-type'); });
+      a.addEventListener('click', () => { typeSel.value = a.getAttribute('data-inquiry-type'); renderExtras(); });
     });
     const fromHash = new URLSearchParams(location.search).get('inquiry');
     if (fromHash && TYPE_LABELS[fromHash]) typeSel.value = fromHash;
+    renderExtras();
 
     function say(text, isError) {
       status.textContent = text;
@@ -2084,7 +2153,8 @@
 
     function openMailto(d) {
       const subject = `${TYPE_LABELS[d.type] || 'Message'} — ${d.name}`;
-      const body = `Hi Thomas,\n\n${d.message}\n\n—\n${d.name}\n${d.email}`;
+      const extra = ['organization', 'format', 'timeline', 'budget', 'script'].filter((k) => d[k]).map((k) => `${k}: ${d[k]}`).join('\n');
+      const body = `Hi Thomas,\n\n${d.message}\n\n${extra ? extra + '\n\n' : ''}—\n${d.name}\n${d.email}`;
       window.location.href = `mailto:thomas@thomasjockin.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     }
 
@@ -2097,6 +2167,11 @@
         message: document.getElementById('msg-message').value.trim(),
         website: document.getElementById('msg-website').value,
       };
+      extraBox.querySelectorAll('[data-field]').forEach((wrap) => {
+        if (wrap.hidden) return;
+        const v = wrap.querySelector('input, select').value.trim();
+        if (v) d[wrap.getAttribute('data-field')] = v;
+      });
       if (!d.name || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(d.email)) { say('Add your name and a valid email so Thomas can reply.', true); return; }
       if (d.message.length < 10) { say('Add a few more words to your message (10 characters minimum).', true); return; }
 
@@ -2105,7 +2180,7 @@
         const res = await fetch('/api/inquiry', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) });
         const out = await res.json().catch(() => ({}));
         if (res.ok && out.ok) {
-          form.reset(); typeSel.value = 'other';
+          form.reset(); typeSel.value = 'other'; renderExtras();
           say('Sent. Thomas will reply to ' + d.email + ' personally.');
           label.textContent = 'Sent';
           setTimeout(() => { btn.disabled = false; label.textContent = 'Send Message'; }, 4000);

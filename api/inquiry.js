@@ -35,6 +35,7 @@ const DESCRIPTION = {
     organization: { required: false, maxLength: LIMITS.organization },
     timeline: { required: false, maxLength: LIMITS.detail, note: 'e.g. when the work is needed or the event date.' },
     budget: { required: false, maxLength: LIMITS.detail, note: 'Optional range, for type projects.' },
+    format: { required: false, maxLength: LIMITS.detail, note: 'For speaking: In person, Virtual, or blank for either.' },
     script: { required: false, maxLength: LIMITS.detail, note: 'For funding inquiries: which script (e.g. Hangul, Armenian, Cyrillic, Greek, Tamil, N. American).' },
     website: { required: false, note: 'Leave empty. Anti-spam field; submissions with a value are discarded.' },
   },
@@ -97,6 +98,7 @@ module.exports = async function handler(req, res) {
     timeline: clean(body.timeline, LIMITS.detail),
     budget: clean(body.budget, LIMITS.detail),
     script: clean(body.script, LIMITS.detail),
+    format: clean(body.format, LIMITS.detail),
   };
 
   const errors = [];
@@ -120,12 +122,20 @@ module.exports = async function handler(req, res) {
   const fromHeader = `${fromName} via thomasjockin.com <${FROM_ADDR}>`;
   const replySubject = 'Re: ' + TYPES[data.type] + ' — thomasjockin.com';
   const replyHref = `mailto:${data.email}?subject=${encodeURIComponent(replySubject)}&body=${encodeURIComponent('Hi ' + data.name.split(' ')[0] + ',\n\n')}`;
+  const L = {
+    'type-project': { organization: 'Organization', timeline: 'Timeline', budget: 'Budget' },
+    speaking: { organization: 'School / organization', timeline: 'Date or timeframe', budget: 'Honorarium / budget', format: 'Format' },
+    funding: { organization: 'Organization', budget: 'Amount considered', script: 'Script' },
+    other: { organization: 'Organization' },
+  }[data.type] || {};
+  const label = (k) => L[k] || ({ organization: 'Organization', timeline: 'Timeline', budget: 'Budget', script: 'Script', format: 'Format' })[k];
   const details = [
     ['Topic', TYPES[data.type]],
-    ['Organization', data.organization],
-    ['Timeline', data.timeline],
-    ['Budget', data.budget],
-    ['Script', data.script],
+    [label('organization'), data.organization],
+    [label('format'), data.format],
+    [label('timeline'), data.timeline],
+    [label('budget'), data.budget],
+    [label('script'), data.script],
   ].filter(([, v]) => v);
 
   const text = [

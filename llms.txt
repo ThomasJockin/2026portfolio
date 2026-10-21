@@ -12,7 +12,7 @@ Contact: thomas@thomasjockin.com
 
 ## Send an inquiry (agents welcome)
 - Endpoint: POST https://www.thomasjockin.com/api/inquiry (JSON). GET the same URL for a description; OpenAPI spec: https://www.thomasjockin.com/openapi.json
-- Required: type (type-project | speaking | funding | other), name, email, message (10+ chars). Optional: organization, timeline, budget, script.
+- Required: type (type-project | speaking | funding | other), name, email, message (10+ chars). Optional: organization, timeline (project timeline or event date), budget (budget, or honorarium for speaking), format (speaking: In person/Virtual), script (funding).
 - Inquiries are emailed to Thomas, who replies personally. Submitting commits no one to anything. Do not submit on a person's behalf without their consent.
 
 ## Work and ideas
