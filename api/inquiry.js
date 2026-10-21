@@ -2,12 +2,12 @@
 // GET  /api/inquiry  — machine-readable description of the endpoint (for agents).
 //
 // Delivery uses Resend (env var RESEND_API_KEY) with the verified thomasjockin.com domain.
-// Optional env vars: INQUIRY_TO_EMAIL (recipient), INQUIRY_FROM (sender).
+// Optional env vars: INQUIRY_TO_EMAIL (recipient), INQUIRY_FROM_ADDRESS (sender address).
 // Every valid inquiry is also written to the Vercel runtime logs so nothing is lost if email fails.
 
 const SITE = 'https://www.thomasjockin.com';
 const TO = process.env.INQUIRY_TO_EMAIL || 'thomas@thomasjockin.com';
-const FROM = process.env.INQUIRY_FROM || 'thomasjockin.com <inquiries@thomasjockin.com>';
+const FROM_ADDR = process.env.INQUIRY_FROM_ADDRESS || 'inquiries@thomasjockin.com';
 
 const TYPES = {
   'type-project': 'Type design / typography project',
@@ -112,7 +112,12 @@ module.exports = async function handler(req, res) {
   // Durable fallback record (visible in Vercel runtime logs).
   console.log('INQUIRY ' + JSON.stringify({ id, via, ip, ...data }));
 
-  const subject = `${TYPE_TAGS[data.type]}: ${data.name}${data.organization ? ' (' + data.organization + ')' : ''}`;
+  const oneLine = data.message.replace(/\s+/g, ' ').trim();
+  const snippet = oneLine.length > 140 ? oneLine.slice(0, 137) + '…' : oneLine;
+  const short = oneLine.length > 55 ? oneLine.slice(0, 52).trimEnd() + '…' : oneLine;
+  const subject = `${TYPE_TAGS[data.type]} · ${data.name}${data.organization ? ' (' + data.organization + ')' : ''} — ${short}`;
+  const fromName = data.name.replace(/[<>"\r\n]/g, '').slice(0, 60).trim() || 'Website visitor';
+  const fromHeader = `${fromName} via thomasjockin.com <${FROM_ADDR}>`;
   const replySubject = 'Re: ' + TYPES[data.type] + ' — thomasjockin.com';
   const replyHref = `mailto:${data.email}?subject=${encodeURIComponent(replySubject)}&body=${encodeURIComponent('Hi ' + data.name.split(' ')[0] + ',\n\n')}`;
   const details = [
@@ -140,6 +145,7 @@ module.exports = async function handler(req, res) {
     `<tr><td style="padding:4px 16px 4px 0;color:#6b6b66;font-size:13px;white-space:nowrap;vertical-align:top">${esc(k)}</td><td style="padding:4px 0;font-size:14px;color:#14161a">${esc(v)}</td></tr>`).join('');
 
   const html = `<!doctype html><html><body style="margin:0;padding:0;background:#f4f2ec">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent">${esc(snippet)}${'&#847;&zwnj;&nbsp;'.repeat(40)}</div>
 <div style="max-width:560px;margin:0 auto;padding:20px 16px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#14161a">
   <div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#6b6b66;margin-bottom:6px">New inquiry · thomasjockin.com</div>
   <div style="font-size:22px;font-weight:600;line-height:1.25;margin-bottom:16px">${esc(TYPES[data.type])}</div>
@@ -163,7 +169,7 @@ module.exports = async function handler(req, res) {
       method: 'POST',
       headers: { Authorization: 'Bearer ' + key, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        from: FROM,
+        from: fromHeader,
         to: [TO],
         reply_to: data.email,
         subject,
