@@ -5,8 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Thomas Jockin — Readex Type Design, A Philosophy of Glimpses & TypeThursday</title>
 <meta name="description" content="Three strands of one practice: Readex, an open-source world-script typeface funding Arabic and Latin now, Hangul next; A Philosophy of Glimpses, a book on beauty, memory, and what AI can't automate; and TypeThursday, the monthly typography meetup running in cities worldwide since 2015.">
-<link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
-<link rel="service-desc" type="application/json" href="/openapi.json">
 <link rel="canonical" href="https://www.thomasjockin.com/">
 
 <meta property="og:type" content="website">
@@ -59,13 +57,7 @@
     "https://x.com/ThomasJockin",
     "https://www.instagram.com/jockinthebox/",
     "https://www.youtube.com/@jockt967"
-   ],
-   "contactPoint": {
-    "@type": "ContactPoint",
-    "contactType": "inquiries",
-    "email": "thomas@thomasjockin.com",
-    "url": "https://www.thomasjockin.com/#message-thomas"
-   }
+   ]
   },
   {
    "@type": "Organization",
@@ -85,18 +77,7 @@
     "@id": "https://www.thomasjockin.com/#person"
    },
    "description": "Custom type systems, variable fonts, reading-focused typography, and multiscript projects for organizations. Past clients include Google, Express, Footlocker, and Michael Kors.",
-   "url": "https://www.thomasjockin.com/#services",
-   "potentialAction": {
-    "@type": "CommunicateAction",
-    "name": "Send an inquiry",
-    "target": {
-     "@type": "EntryPoint",
-     "urlTemplate": "https://www.thomasjockin.com/api/inquiry",
-     "httpMethod": "POST",
-     "contentType": "application/json",
-     "description": "https://www.thomasjockin.com/openapi.json"
-    }
-   }
+   "url": "https://www.thomasjockin.com/#services"
   },
   {
    "@type": "Service",
@@ -107,18 +88,7 @@
     "@id": "https://www.thomasjockin.com/#person"
    },
    "description": "Guest lectures, workshops, faculty programming, and design education events, virtual or in person. Has taught at CUNY Queens College, CUNY City College, and SUNY Fashion Institute of Technology.",
-   "url": "https://www.thomasjockin.com/#services",
-   "potentialAction": {
-    "@type": "CommunicateAction",
-    "name": "Send an inquiry",
-    "target": {
-     "@type": "EntryPoint",
-     "urlTemplate": "https://www.thomasjockin.com/api/inquiry",
-     "httpMethod": "POST",
-     "contentType": "application/json",
-     "description": "https://www.thomasjockin.com/openapi.json"
-    }
-   }
+   "url": "https://www.thomasjockin.com/#services"
   },
   {
    "@type": "Book",
@@ -242,39 +212,26 @@
   }
 
   @media (max-width: 640px) {
-    html { scroll-padding-top: 6rem; }
-
     .shell-nav {
       height: auto;
-      padding: 0 clamp(1.25rem, 4vw, 3rem);
+      padding-top: 0.65rem;
+      padding-bottom: 0.65rem;
     }
 
-    /* 2x2 grid: aligned columns, 44px-tall tap targets, no ragged wrapping */
     .shell-nav .links {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0 1rem;
+      flex-wrap: wrap;
+      row-gap: 0.4rem;
+      column-gap: 0.9rem;
     }
 
-    .shell-nav .links li { min-width: 0; }
-
-    .shell-nav .links li:nth-child(-n+2) {
-      border-bottom: 1px solid rgba(242,241,236,0.08);
+    .shell-nav .links-split {
+      margin-left: 0; /* no left/right split on mobile — just wrap in order */
     }
-
-    .shell-nav .links-split { margin-left: 0; }
 
     .shell-nav .links a {
-      display: flex;
-      align-items: center;
-      min-height: 44px;
-      padding: 0;
       font-size: 0.7rem;
-      line-height: 1.25;
       white-space: normal;
     }
-
-    .shell-nav .links a.nav-message { color: var(--shell-ink); }
   }
 
   .shell-intro {
@@ -1748,23 +1705,15 @@
   .svc-list { margin: 1.5rem 0 0; }
   .svc-list dt { font-weight: 600; margin: 1.5rem 0 0.35rem; }
   .svc-list dd { margin: 0; color: var(--shell-ink-soft); line-height: 1.6; }
-  .svc-list a { color: var(--shell-ink); text-underline-offset: 3px; }
-
-  .msg-field select { background: transparent; border: none; border-bottom: 1px solid rgba(242,241,236,0.25); color: var(--shell-ink); font-family: 'Archivo', sans-serif; font-size: 1rem; padding: 0.6rem 0.1rem; border-radius: 0; appearance: none; -webkit-appearance: none; cursor: pointer; background-image: linear-gradient(45deg, transparent 50%, var(--shell-ink-soft) 50%), linear-gradient(135deg, var(--shell-ink-soft) 50%, transparent 50%); background-position: calc(100% - 14px) 55%, calc(100% - 9px) 55%; background-size: 5px 5px; background-repeat: no-repeat; }
-  .msg-field select:focus { outline: none; border-bottom-color: var(--shell-ink); }
-  .msg-field select option { background: #0e0e0d; color: #f2f1ec; }
-  .msg-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
-  .msg-submit:disabled { opacity: 0.6; cursor: progress; }
-
-  .msg-extra { display: flex; flex-direction: column; gap: 1.4rem; }
-  .msg-extra[hidden], .msg-field[hidden] { display: none; }
+  .svc-list a, .svc-note a { color: var(--shell-ink); text-underline-offset: 3px; }
+  .svc-note { margin: 2rem 0 0; font-size: 0.85rem; color: var(--shell-ink-soft); }
 </style>
 </head>
 <body>
 
 <nav class="shell-nav">
   <ul class="links">
-    <li><a href="#message-thomas" class="nav-message" data-inquiry-type="other">Message Thomas</a></li>
+    <li><a href="mailto:thomas@thomasjockin.com" class="nav-message">Message Thomas</a></li>
     <li class="links-split"><a href="#readex">A Font That Fits to You</a></li>
     <li><a href="#to-kalon">Thought Leadership</a></li>
     <li><a href="#type-thursday">Third Spaces</a></li>
@@ -1777,15 +1726,15 @@
   <div class="hero-cta-row">
     <img src="images/tj-photo.webp" alt="Thomas Jockin" class="hero-photo" width="320" height="320">
     <div class="hero-cta-group">
-      <a class="hero-cta" href="#message-thomas" data-inquiry-type="type-project" data-cta="contact" data-cta-detail="hero-type">
+      <a class="hero-cta" href="mailto:thomas@thomasjockin.com?subject=Type%20project%20inquiry" data-cta="contact" data-cta-detail="hero-type">
         Type project
         <span class="hero-cta-arrow" aria-hidden="true">→</span>
       </a>
-      <a class="hero-cta" href="#message-thomas" data-inquiry-type="speaking" data-cta="contact" data-cta-detail="hero-speaking">
+      <a class="hero-cta" href="mailto:thomas@thomasjockin.com?subject=Speaking%20inquiry" data-cta="contact" data-cta-detail="hero-speaking">
         Speaking
         <span class="hero-cta-arrow" aria-hidden="true">→</span>
       </a>
-      <a class="hero-cta" href="#message-thomas" data-inquiry-type="other" data-cta="contact" data-cta-detail="hero-other">
+      <a class="hero-cta" href="mailto:thomas@thomasjockin.com?subject=Hello%20from%20the%20website" data-cta="contact" data-cta-detail="hero-other">
         Something else
         <span class="hero-cta-arrow" aria-hidden="true">→</span>
       </a>
@@ -2017,16 +1966,17 @@
     <h2 id="services-h">Ways to work together</h2>
     <dl class="svc-list">
       <dt>Type design and typography</dt>
-      <dd>Custom type systems, variable fonts, reading-focused typography, and multiscript projects for organizations. Past clients include Google, Express, Footlocker, and Michael Kors. <a href="/?inquiry=type-project#message-thomas">Discuss a type project</a>.</dd>
+      <dd>Custom type systems, variable fonts, reading-focused typography, and multiscript projects for organizations. Past clients include Google, Express, Footlocker, and Michael Kors. <a href="mailto:thomas@thomasjockin.com?subject=Type%20project%20inquiry">Discuss a type project</a>.</dd>
       <dt>Speaking, workshops, and teaching</dt>
-      <dd>Guest lectures, workshops, faculty programming, and design education events, virtual or in person. Thomas has taught at CUNY Queens College, CUNY City College, and SUNY Fashion Institute of Technology. <a href="/?inquiry=speaking#message-thomas">Invite Thomas</a>.</dd>
+      <dd>Guest lectures, workshops, faculty programming, and design education events, virtual or in person. Thomas has taught at CUNY Queens College, CUNY City College, and SUNY Fashion Institute of Technology. <a href="mailto:thomas@thomasjockin.com?subject=Speaking%20inquiry">Invite Thomas</a>.</dd>
       <dt>Readex script funding</dt>
-      <dd>Readex, the open-source world-script expansion of Lexend, has $350,000 raised of $756,000. Latin and Arabic are funded; Hangul, Armenian, Cyrillic, Greek, Tamil, and N. American scripts still need funding. <a href="/?inquiry=funding#message-thomas">Ask about funding a script</a>.</dd>
+      <dd>Readex, the open-source world-script expansion of Lexend, has $350,000 raised of $756,000. Latin and Arabic are funded; Hangul, Armenian, Cyrillic, Greek, Tamil, and N. American scripts still need funding. <a href="mailto:thomas@thomasjockin.com?subject=Readex%20script%20funding%20inquiry">Ask about funding a script</a>.</dd>
       <dt>Thought leadership</dt>
       <dd>A Philosophy of Glimpses, co-authored with O.G. Rose and Javier Rivera, and essays on beauty, judgment, and technology. <a href="https://www.amazon.com/dp/1736507516">Read the book</a>.</dd>
       <dt>TypeThursday</dt>
       <dd>A monthly, in-person typography meetup in nearly 20 cities worldwide, founded by Thomas.</dd>
     </dl>
+    <p class="svc-note">For a plain-text summary, see <a href="/llms.txt">llms.txt</a>. Contact: <a href="mailto:thomas@thomasjockin.com">thomas@thomasjockin.com</a>.</p>
   </div>
 </section>
 
@@ -2034,61 +1984,21 @@
   <div class="msg-inner">
     <p class="msg-eyebrow">Message Thomas</p>
     <h2>Have a project, question, or idea? Send it over.</h2>
-    <form class="msg-form" id="msg-form" novalidate>
-      <div class="msg-field">
-        <label for="msg-type">What is this about?</label>
-        <select id="msg-type" name="type">
-          <option value="type-project">A type project</option>
-          <option value="speaking">Speaking, workshop, or teaching</option>
-          <option value="funding">Funding a Readex script</option>
-          <option value="other" selected>Something else</option>
-        </select>
-      </div>
+    <form class="msg-form" id="msg-form">
       <div class="msg-field">
         <label for="msg-name">Name</label>
-        <input type="text" id="msg-name" name="name" placeholder="Your name" autocomplete="name" required>
+        <input type="text" id="msg-name" name="Name" placeholder="Your name" required>
       </div>
       <div class="msg-field">
         <label for="msg-email">Email</label>
-        <input type="email" id="msg-email" name="email" placeholder="you@example.com" autocomplete="email" required>
-      </div>
-      <div class="msg-extra" id="msg-extra">
-        <div class="msg-field" data-field="organization" hidden>
-          <label for="msg-organization">Organization</label>
-          <input type="text" id="msg-organization" name="organization" autocomplete="organization" maxlength="160">
-        </div>
-        <div class="msg-field" data-field="format" hidden>
-          <label for="msg-format">Format (optional)</label>
-          <select id="msg-format" name="format">
-            <option value="">Either works</option>
-            <option value="In person">In person</option>
-            <option value="Virtual">Virtual</option>
-          </select>
-        </div>
-        <div class="msg-field" data-field="timeline" hidden>
-          <label for="msg-timeline">Timeline</label>
-          <input type="text" id="msg-timeline" name="timeline" maxlength="300">
-        </div>
-        <div class="msg-field" data-field="budget" hidden>
-          <label for="msg-budget">Budget</label>
-          <input type="text" id="msg-budget" name="budget" maxlength="300">
-        </div>
-        <div class="msg-field" data-field="script" hidden>
-          <label for="msg-script">Script (optional)</label>
-          <select id="msg-script" name="script">
-            <option value="">Not sure yet</option>
-            <option>Hangul</option><option>Armenian</option><option>Cyrillic</option>
-            <option>Greek</option><option>Tamil</option><option>N. American</option>
-          </select>
-        </div>
+        <input type="email" id="msg-email" name="Email" placeholder="you@example.com" required>
       </div>
       <div class="msg-field">
         <label for="msg-message">Message</label>
-        <textarea id="msg-message" name="message" rows="5" placeholder="What's on your mind?" minlength="10" required></textarea>
+        <textarea id="msg-message" name="Message" rows="5" placeholder="What's on your mind?" required></textarea>
       </div>
-      <div class="msg-hp" aria-hidden="true"><label>Leave this empty <input type="text" name="website" id="msg-website" tabindex="-1" autocomplete="off"></label></div>
-      <button type="submit" class="hero-cta msg-submit" id="msg-submit"><span class="msg-submit-label">Send Message</span> <span class="hero-cta-arrow" aria-hidden="true">→</span></button>
-      <p class="msg-note" id="msg-status" role="status" aria-live="polite">Thomas reads every message and replies personally.</p>
+      <button type="submit" class="hero-cta msg-submit">Send Message <span class="hero-cta-arrow" aria-hidden="true">→</span></button>
+      <p class="msg-note">This opens your email app with the message pre-filled — nothing is sent automatically.</p>
     </form>
   </div>
 </section>
@@ -2097,102 +2007,18 @@
   (function () {
     const form = document.getElementById('msg-form');
     if (!form) return;
-    const status = document.getElementById('msg-status');
-    const btn = document.getElementById('msg-submit');
-    const label = btn.querySelector('.msg-submit-label');
-    const typeSel = document.getElementById('msg-type');
-    const EXTRA = {
-      'type-project': {
-        organization: ['Organization (optional)', 'Company or studio'],
-        timeline: ['Timeline (optional)', 'e.g. launching in Q2 2027'],
-        budget: ['Budget (optional)', 'e.g. $40–60k, or not sure yet'],
-      },
-      speaking: {
-        organization: ['School or organization (optional)', 'e.g. Queens College'],
-        format: true,
-        timeline: ['Date or timeframe (optional)', 'e.g. March 12, or spring semester'],
-        budget: ['Honorarium or budget (optional)', 'e.g. $200 honorarium + travel'],
-      },
-      funding: {
-        organization: ['Organization (optional)', 'Company, foundation, or individual'],
-        script: true,
-        budget: ["Amount you're considering (optional)", 'e.g. $10,000'],
-      },
-      other: {},
-    };
-    const extraBox = document.getElementById('msg-extra');
-    function renderExtras() {
-      const cfg = EXTRA[typeSel.value] || {};
-      extraBox.querySelectorAll('[data-field]').forEach((wrap) => {
-        const key = wrap.getAttribute('data-field');
-        const def = cfg[key];
-        const input = wrap.querySelector('input, select');
-        if (!def) { wrap.hidden = true; input.value = ''; return; }
-        wrap.hidden = false;
-        if (Array.isArray(def)) {
-          wrap.querySelector('label').textContent = def[0];
-          input.placeholder = def[1];
-        }
-      });
-    }
-    typeSel.addEventListener('change', renderExtras);
-    const TYPE_LABELS = { 'type-project': 'Type project inquiry', 'speaking': 'Speaking inquiry', 'funding': 'Funding inquiry', 'other': 'Hello from the website' };
-
-    // Hero / nav buttons preselect the topic and jump to the form.
-    document.querySelectorAll('[data-inquiry-type]').forEach((a) => {
-      a.addEventListener('click', () => { typeSel.value = a.getAttribute('data-inquiry-type'); renderExtras(); });
-    });
-    const fromHash = new URLSearchParams(location.search).get('inquiry');
-    if (fromHash && TYPE_LABELS[fromHash]) typeSel.value = fromHash;
-    renderExtras();
-
-    function say(text, isError) {
-      status.textContent = text;
-      status.style.color = isError ? '#e8b4a8' : '';
-    }
-
-    function openMailto(d) {
-      const subject = `${TYPE_LABELS[d.type] || 'Message'} — ${d.name}`;
-      const extra = ['organization', 'format', 'timeline', 'budget', 'script'].filter((k) => d[k]).map((k) => `${k}: ${d[k]}`).join('\n');
-      const body = `Hi Thomas,\n\n${d.message}\n\n${extra ? extra + '\n\n' : ''}—\n${d.name}\n${d.email}`;
-      window.location.href = `mailto:thomas@thomasjockin.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    }
-
-    form.addEventListener('submit', async (e) => {
+    form.addEventListener('submit', (e) => {
       e.preventDefault();
-      const d = {
-        type: typeSel.value,
-        name: document.getElementById('msg-name').value.trim(),
-        email: document.getElementById('msg-email').value.trim(),
-        message: document.getElementById('msg-message').value.trim(),
-        website: document.getElementById('msg-website').value,
-      };
-      extraBox.querySelectorAll('[data-field]').forEach((wrap) => {
-        if (wrap.hidden) return;
-        const v = wrap.querySelector('input, select').value.trim();
-        if (v) d[wrap.getAttribute('data-field')] = v;
-      });
-      if (!d.name || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(d.email)) { say('Add your name and a valid email so Thomas can reply.', true); return; }
-      if (d.message.length < 10) { say('Add a few more words to your message (10 characters minimum).', true); return; }
+      const name = document.getElementById('msg-name').value.trim();
+      const email = document.getElementById('msg-email').value.trim();
+      const message = document.getElementById('msg-message').value.trim();
 
-      btn.disabled = true; label.textContent = 'Sending…'; say('Sending…');
-      try {
-        const res = await fetch('/api/inquiry', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) });
-        const out = await res.json().catch(() => ({}));
-        if (res.ok && out.ok) {
-          form.reset(); typeSel.value = 'other'; renderExtras();
-          say('Sent. Thomas will reply to ' + d.email + ' personally.');
-          label.textContent = 'Sent';
-          setTimeout(() => { btn.disabled = false; label.textContent = 'Send Message'; }, 4000);
-          return;
-        }
-        if (res.status === 400 && out.errors) { say(out.errors.join('. ') + '.', true); btn.disabled = false; label.textContent = 'Send Message'; return; }
-        throw new Error('delivery');
-      } catch (err) {
-        say("That didn't go through. Opening your email app instead.", true);
-        btn.disabled = false; label.textContent = 'Send Message';
-        openMailto(d);
-      }
+      const subject = `Message from ${name} via thomasjockin.com`;
+      const body =
+        `Hi Thomas,\n\n${message}\n\n—\n${name}\n${email}`;
+
+      const mailto = `mailto:thomas@thomasjockin.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      window.location.href = mailto;
     });
   })();
 </script>
