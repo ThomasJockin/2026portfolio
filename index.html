@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Thomas Jockin — Readex Type Design, A Philosophy of Glimpses & TypeThursday</title>
 <meta name="description" content="Three strands of one practice: Readex, an open-source world-script typeface funding Arabic and Latin now, Hangul next; A Philosophy of Glimpses, a book on beauty, memory, and what AI can't automate; and TypeThursday, the monthly typography meetup running in cities worldwide since 2015.">
+<link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
+<link rel="service-desc" type="application/json" href="/openapi.json">
 <link rel="canonical" href="https://www.thomasjockin.com/">
 
 <meta property="og:type" content="website">
@@ -57,7 +59,13 @@
     "https://x.com/ThomasJockin",
     "https://www.instagram.com/jockinthebox/",
     "https://www.youtube.com/@jockt967"
-   ]
+   ],
+   "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "inquiries",
+    "email": "thomas@thomasjockin.com",
+    "url": "https://www.thomasjockin.com/#message-thomas"
+   }
   },
   {
    "@type": "Organization",
@@ -77,7 +85,18 @@
     "@id": "https://www.thomasjockin.com/#person"
    },
    "description": "Custom type systems, variable fonts, reading-focused typography, and multiscript projects for organizations. Past clients include Google, Express, Footlocker, and Michael Kors.",
-   "url": "https://www.thomasjockin.com/#services"
+   "url": "https://www.thomasjockin.com/#services",
+   "potentialAction": {
+    "@type": "CommunicateAction",
+    "name": "Send an inquiry",
+    "target": {
+     "@type": "EntryPoint",
+     "urlTemplate": "https://www.thomasjockin.com/api/inquiry",
+     "httpMethod": "POST",
+     "contentType": "application/json",
+     "description": "https://www.thomasjockin.com/openapi.json"
+    }
+   }
   },
   {
    "@type": "Service",
@@ -88,7 +107,18 @@
     "@id": "https://www.thomasjockin.com/#person"
    },
    "description": "Guest lectures, workshops, faculty programming, and design education events, virtual or in person. Has taught at CUNY Queens College, CUNY City College, and SUNY Fashion Institute of Technology.",
-   "url": "https://www.thomasjockin.com/#services"
+   "url": "https://www.thomasjockin.com/#services",
+   "potentialAction": {
+    "@type": "CommunicateAction",
+    "name": "Send an inquiry",
+    "target": {
+     "@type": "EntryPoint",
+     "urlTemplate": "https://www.thomasjockin.com/api/inquiry",
+     "httpMethod": "POST",
+     "contentType": "application/json",
+     "description": "https://www.thomasjockin.com/openapi.json"
+    }
+   }
   },
   {
    "@type": "Book",
@@ -212,26 +242,39 @@
   }
 
   @media (max-width: 640px) {
+    html { scroll-padding-top: 6rem; }
+
     .shell-nav {
       height: auto;
-      padding-top: 0.65rem;
-      padding-bottom: 0.65rem;
+      padding: 0 clamp(1.25rem, 4vw, 3rem);
     }
 
+    /* 2x2 grid: aligned columns, 44px-tall tap targets, no ragged wrapping */
     .shell-nav .links {
-      flex-wrap: wrap;
-      row-gap: 0.4rem;
-      column-gap: 0.9rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 1rem;
     }
 
-    .shell-nav .links-split {
-      margin-left: 0; /* no left/right split on mobile — just wrap in order */
+    .shell-nav .links li { min-width: 0; }
+
+    .shell-nav .links li:nth-child(-n+2) {
+      border-bottom: 1px solid rgba(242,241,236,0.08);
     }
+
+    .shell-nav .links-split { margin-left: 0; }
 
     .shell-nav .links a {
+      display: flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 0;
       font-size: 0.7rem;
+      line-height: 1.25;
       white-space: normal;
     }
+
+    .shell-nav .links a.nav-message { color: var(--shell-ink); }
   }
 
   .shell-intro {
@@ -1705,15 +1748,23 @@
   .svc-list { margin: 1.5rem 0 0; }
   .svc-list dt { font-weight: 600; margin: 1.5rem 0 0.35rem; }
   .svc-list dd { margin: 0; color: var(--shell-ink-soft); line-height: 1.6; }
-  .svc-list a, .svc-note a { color: var(--shell-ink); text-underline-offset: 3px; }
-  .svc-note { margin: 2rem 0 0; font-size: 0.85rem; color: var(--shell-ink-soft); }
+  .svc-list a { color: var(--shell-ink); text-underline-offset: 3px; }
+
+  .msg-field select { background: transparent; border: none; border-bottom: 1px solid rgba(242,241,236,0.25); color: var(--shell-ink); font-family: 'Archivo', sans-serif; font-size: 1rem; padding: 0.6rem 0.1rem; border-radius: 0; appearance: none; -webkit-appearance: none; cursor: pointer; background-image: linear-gradient(45deg, transparent 50%, var(--shell-ink-soft) 50%), linear-gradient(135deg, var(--shell-ink-soft) 50%, transparent 50%); background-position: calc(100% - 14px) 55%, calc(100% - 9px) 55%; background-size: 5px 5px; background-repeat: no-repeat; }
+  .msg-field select:focus { outline: none; border-bottom-color: var(--shell-ink); }
+  .msg-field select option { background: #0e0e0d; color: #f2f1ec; }
+  .msg-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .msg-submit:disabled { opacity: 0.6; cursor: progress; }
+
+  .msg-extra { display: flex; flex-direction: column; gap: 1.4rem; }
+  .msg-extra[hidden], .msg-field[hidden] { display: none; }
 </style>
 </head>
 <body>
 
 <nav class="shell-nav">
   <ul class="links">
-    <li><a href="mailto:thomas@thomasjockin.com" class="nav-message">Message Thomas</a></li>
+    <li><a href="#message-thomas" class="nav-message" data-inquiry-type="other">Message Thomas</a></li>
     <li class="links-split"><a href="#readex">A Font That Fits to You</a></li>
     <li><a href="#to-kalon">Thought Leadership</a></li>
     <li><a href="#type-thursday">Third Spaces</a></li>
@@ -1726,15 +1777,15 @@
   <div class="hero-cta-row">
     <img src="images/tj-photo.webp" alt="Thomas Jockin" class="hero-photo" width="320" height="320">
     <div class="hero-cta-group">
-      <a class="hero-cta" href="mailto:thomas@thomasjockin.com?subject=Type%20project%20inquiry" data-cta="contact" data-cta-detail="hero-type">
+      <a class="hero-cta" href="#message-thomas" data-inquiry-type="type-project" data-cta="contact" data-cta-detail="hero-type">
         Type project
         <span class="hero-cta-arrow" aria-hidden="true">→</span>
       </a>
-      <a class="hero-cta" href="mailto:thomas@thomasjockin.com?subject=Speaking%20inquiry" data-cta="contact" data-cta-detail="hero-speaking">
+      <a class="hero-cta" href="#message-thomas" data-inquiry-type="speaking" data-cta="contact" data-cta-detail="hero-speaking">
         Speaking
         <span class="hero-cta-arrow" aria-hidden="true">→</span>
       </a>
-      <a class="hero-cta" href="mailto:thomas@thomasjockin.com?subject=Hello%20from%20the%20website" data-cta="contact" data-cta-detail="hero-other">
+      <a class="hero-cta" href="#message-thomas" data-inquiry-type="other" data-cta="contact" data-cta-detail="hero-other">
         Something else
         <span class="hero-cta-arrow" aria-hidden="true">→</span>
       </a>
@@ -1906,7 +1957,7 @@
       </a>
     </div>
     <div class="epigraph-list" id="epigraphList"></div>
-    <a href="#" class="explore-more" id="epigraphMore">See more essays →</a>
+    <a href="#" class="explore-more" id="epigraphMore">See more essays &amp; conversations →</a>
 
 
       <a class="cta-card cta-card--link" href="mailto:thomas@thomasjockin.com?subject=Speaking%20inquiry" data-cta="contact" data-cta-detail="kalon-section">
@@ -1966,17 +2017,16 @@
     <h2 id="services-h">Ways to work together</h2>
     <dl class="svc-list">
       <dt>Type design and typography</dt>
-      <dd>Custom type systems, variable fonts, reading-focused typography, and multiscript projects for organizations. Past clients include Google, Express, Footlocker, and Michael Kors. <a href="mailto:thomas@thomasjockin.com?subject=Type%20project%20inquiry">Discuss a type project</a>.</dd>
+      <dd>Custom type systems, variable fonts, reading-focused typography, and multiscript projects for organizations. Past clients include Google, Express, Footlocker, and Michael Kors. <a href="/?inquiry=type-project#message-thomas">Discuss a type project</a>.</dd>
       <dt>Speaking, workshops, and teaching</dt>
-      <dd>Guest lectures, workshops, faculty programming, and design education events, virtual or in person. Thomas has taught at CUNY Queens College, CUNY City College, and SUNY Fashion Institute of Technology. <a href="mailto:thomas@thomasjockin.com?subject=Speaking%20inquiry">Invite Thomas</a>.</dd>
+      <dd>Guest lectures, workshops, faculty programming, and design education events, virtual or in person. Thomas has taught at CUNY Queens College, CUNY City College, and SUNY Fashion Institute of Technology. <a href="/?inquiry=speaking#message-thomas">Invite Thomas</a>.</dd>
       <dt>Readex script funding</dt>
-      <dd>Readex, the open-source world-script expansion of Lexend, has $350,000 raised of $756,000. Latin and Arabic are funded; Hangul, Armenian, Cyrillic, Greek, Tamil, and N. American scripts still need funding. <a href="mailto:thomas@thomasjockin.com?subject=Readex%20script%20funding%20inquiry">Ask about funding a script</a>.</dd>
+      <dd>Readex, the open-source world-script expansion of Lexend, has $350,000 raised of $756,000. Latin and Arabic are funded; Hangul, Armenian, Cyrillic, Greek, Tamil, and N. American scripts still need funding. <a href="/?inquiry=funding#message-thomas">Ask about funding a script</a>.</dd>
       <dt>Thought leadership</dt>
       <dd>A Philosophy of Glimpses, co-authored with O.G. Rose and Javier Rivera, and essays on beauty, judgment, and technology. <a href="https://www.amazon.com/dp/1736507516">Read the book</a>.</dd>
       <dt>TypeThursday</dt>
       <dd>A monthly, in-person typography meetup in nearly 20 cities worldwide, founded by Thomas.</dd>
     </dl>
-    <p class="svc-note">For a plain-text summary, see <a href="/llms.txt">llms.txt</a>. Contact: <a href="mailto:thomas@thomasjockin.com">thomas@thomasjockin.com</a>.</p>
   </div>
 </section>
 
@@ -1984,21 +2034,61 @@
   <div class="msg-inner">
     <p class="msg-eyebrow">Message Thomas</p>
     <h2>Have a project, question, or idea? Send it over.</h2>
-    <form class="msg-form" id="msg-form">
+    <form class="msg-form" id="msg-form" novalidate>
+      <div class="msg-field">
+        <label for="msg-type">What is this about?</label>
+        <select id="msg-type" name="type">
+          <option value="type-project">A type project</option>
+          <option value="speaking">Speaking, workshop, or teaching</option>
+          <option value="funding">Funding a Readex script</option>
+          <option value="other" selected>Something else</option>
+        </select>
+      </div>
       <div class="msg-field">
         <label for="msg-name">Name</label>
-        <input type="text" id="msg-name" name="Name" placeholder="Your name" required>
+        <input type="text" id="msg-name" name="name" placeholder="Your name" autocomplete="name" required>
       </div>
       <div class="msg-field">
         <label for="msg-email">Email</label>
-        <input type="email" id="msg-email" name="Email" placeholder="you@example.com" required>
+        <input type="email" id="msg-email" name="email" placeholder="you@example.com" autocomplete="email" required>
+      </div>
+      <div class="msg-extra" id="msg-extra">
+        <div class="msg-field" data-field="organization" hidden>
+          <label for="msg-organization">Organization</label>
+          <input type="text" id="msg-organization" name="organization" autocomplete="organization" maxlength="160">
+        </div>
+        <div class="msg-field" data-field="format" hidden>
+          <label for="msg-format">Format (optional)</label>
+          <select id="msg-format" name="format">
+            <option value="">Either works</option>
+            <option value="In person">In person</option>
+            <option value="Virtual">Virtual</option>
+          </select>
+        </div>
+        <div class="msg-field" data-field="timeline" hidden>
+          <label for="msg-timeline">Timeline</label>
+          <input type="text" id="msg-timeline" name="timeline" maxlength="300">
+        </div>
+        <div class="msg-field" data-field="budget" hidden>
+          <label for="msg-budget">Budget</label>
+          <input type="text" id="msg-budget" name="budget" maxlength="300">
+        </div>
+        <div class="msg-field" data-field="script" hidden>
+          <label for="msg-script">Script (optional)</label>
+          <select id="msg-script" name="script">
+            <option value="">Not sure yet</option>
+            <option>Hangul</option><option>Armenian</option><option>Cyrillic</option>
+            <option>Greek</option><option>Tamil</option><option>N. American</option>
+          </select>
+        </div>
       </div>
       <div class="msg-field">
         <label for="msg-message">Message</label>
-        <textarea id="msg-message" name="Message" rows="5" placeholder="What's on your mind?" required></textarea>
+        <textarea id="msg-message" name="message" rows="5" placeholder="What's on your mind?" minlength="10" required></textarea>
       </div>
-      <button type="submit" class="hero-cta msg-submit">Send Message <span class="hero-cta-arrow" aria-hidden="true">→</span></button>
-      <p class="msg-note">This opens your email app with the message pre-filled — nothing is sent automatically.</p>
+      <div class="msg-hp" aria-hidden="true"><label>Leave this empty <input type="text" name="website" id="msg-website" tabindex="-1" autocomplete="off"></label></div>
+      <button type="submit" class="hero-cta msg-submit" id="msg-submit"><span class="msg-submit-label">Send Message</span> <span class="hero-cta-arrow" aria-hidden="true">→</span></button>
+      <p class="msg-note" id="msg-status" role="status" aria-live="polite">Thomas reads every message and replies personally.</p>
     </form>
   </div>
 </section>
@@ -2007,18 +2097,102 @@
   (function () {
     const form = document.getElementById('msg-form');
     if (!form) return;
-    form.addEventListener('submit', (e) => {
+    const status = document.getElementById('msg-status');
+    const btn = document.getElementById('msg-submit');
+    const label = btn.querySelector('.msg-submit-label');
+    const typeSel = document.getElementById('msg-type');
+    const EXTRA = {
+      'type-project': {
+        organization: ['Organization (optional)', 'Company or studio'],
+        timeline: ['Timeline (optional)', 'e.g. launching in Q2 2027'],
+        budget: ['Budget (optional)', 'e.g. $40–60k, or not sure yet'],
+      },
+      speaking: {
+        organization: ['School or organization (optional)', 'e.g. Queens College'],
+        format: true,
+        timeline: ['Date or timeframe (optional)', 'e.g. March 12, or spring semester'],
+        budget: ['Honorarium or budget (optional)', 'e.g. $200 honorarium + travel'],
+      },
+      funding: {
+        organization: ['Organization (optional)', 'Company, foundation, or individual'],
+        script: true,
+        budget: ["Amount you're considering (optional)", 'e.g. $10,000'],
+      },
+      other: {},
+    };
+    const extraBox = document.getElementById('msg-extra');
+    function renderExtras() {
+      const cfg = EXTRA[typeSel.value] || {};
+      extraBox.querySelectorAll('[data-field]').forEach((wrap) => {
+        const key = wrap.getAttribute('data-field');
+        const def = cfg[key];
+        const input = wrap.querySelector('input, select');
+        if (!def) { wrap.hidden = true; input.value = ''; return; }
+        wrap.hidden = false;
+        if (Array.isArray(def)) {
+          wrap.querySelector('label').textContent = def[0];
+          input.placeholder = def[1];
+        }
+      });
+    }
+    typeSel.addEventListener('change', renderExtras);
+    const TYPE_LABELS = { 'type-project': 'Type project inquiry', 'speaking': 'Speaking inquiry', 'funding': 'Funding inquiry', 'other': 'Hello from the website' };
+
+    // Hero / nav buttons preselect the topic and jump to the form.
+    document.querySelectorAll('[data-inquiry-type]').forEach((a) => {
+      a.addEventListener('click', () => { typeSel.value = a.getAttribute('data-inquiry-type'); renderExtras(); });
+    });
+    const fromHash = new URLSearchParams(location.search).get('inquiry');
+    if (fromHash && TYPE_LABELS[fromHash]) typeSel.value = fromHash;
+    renderExtras();
+
+    function say(text, isError) {
+      status.textContent = text;
+      status.style.color = isError ? '#e8b4a8' : '';
+    }
+
+    function openMailto(d) {
+      const subject = `${TYPE_LABELS[d.type] || 'Message'} — ${d.name}`;
+      const extra = ['organization', 'format', 'timeline', 'budget', 'script'].filter((k) => d[k]).map((k) => `${k}: ${d[k]}`).join('\n');
+      const body = `Hi Thomas,\n\n${d.message}\n\n${extra ? extra + '\n\n' : ''}—\n${d.name}\n${d.email}`;
+      window.location.href = `mailto:thomas@thomasjockin.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    }
+
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const name = document.getElementById('msg-name').value.trim();
-      const email = document.getElementById('msg-email').value.trim();
-      const message = document.getElementById('msg-message').value.trim();
+      const d = {
+        type: typeSel.value,
+        name: document.getElementById('msg-name').value.trim(),
+        email: document.getElementById('msg-email').value.trim(),
+        message: document.getElementById('msg-message').value.trim(),
+        website: document.getElementById('msg-website').value,
+      };
+      extraBox.querySelectorAll('[data-field]').forEach((wrap) => {
+        if (wrap.hidden) return;
+        const v = wrap.querySelector('input, select').value.trim();
+        if (v) d[wrap.getAttribute('data-field')] = v;
+      });
+      if (!d.name || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(d.email)) { say('Add your name and a valid email so Thomas can reply.', true); return; }
+      if (d.message.length < 10) { say('Add a few more words to your message (10 characters minimum).', true); return; }
 
-      const subject = `Message from ${name} via thomasjockin.com`;
-      const body =
-        `Hi Thomas,\n\n${message}\n\n—\n${name}\n${email}`;
-
-      const mailto = `mailto:thomas@thomasjockin.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      window.location.href = mailto;
+      btn.disabled = true; label.textContent = 'Sending…'; say('Sending…');
+      try {
+        const res = await fetch('/api/inquiry', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) });
+        const out = await res.json().catch(() => ({}));
+        if (res.ok && out.ok) {
+          form.reset(); typeSel.value = 'other'; renderExtras();
+          say('Sent. Thomas will reply to ' + d.email + ' personally.');
+          label.textContent = 'Sent';
+          setTimeout(() => { btn.disabled = false; label.textContent = 'Send Message'; }, 4000);
+          return;
+        }
+        if (res.status === 400 && out.errors) { say(out.errors.join('. ') + '.', true); btn.disabled = false; label.textContent = 'Send Message'; return; }
+        throw new Error('delivery');
+      } catch (err) {
+        say("That didn't go through. Opening your email app instead.", true);
+        btn.disabled = false; label.textContent = 'Send Message';
+        openMailto(d);
+      }
     });
   })();
 </script>
@@ -2141,7 +2315,7 @@
   // and 10 TypeThursday pieces (of 51 available) — 10 fills two full rows
   // of flyers at this container width instead of leaving an orphaned
   // card on its own row.
-  const KALON_POOL = [{"title": "FotB #4 Can You Know What Your Life Means Before You Die?", "thumbnail": "https://i.ytimg.com/vi/sL0aprvdMxk/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=sL0aprvdMxk", "sourceType": "youtube", "excerpt": "Can we understand the meaning of our lives while we are still living them, or does every new encounter rewrite what came before?…"}, {"title": "FotB #3: Why We Chase Rare Things (And Why They're Never Enough)", "thumbnail": "https://i.ytimg.com/vi/RkGDiU0H6u8/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=RkGDiU0H6u8", "sourceType": "youtube", "excerpt": "We chase limited editions. Luxury goods. Collectibles. Things that are difficult to obtain. But are we really after rarity? In…"}, {"title": "Dignity is a Mnemonic of the Beautiful", "thumbnail": "https://substackcdn.com/image/fetch/$s_!BCAx!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F49543531-8b99-4c50-9216-b999a831f350_2128x1490.png", "url": "https://thomasjockin.substack.com/p/dignity-is-a-mnemonic-of-the-beautiful", "sourceType": "substack", "excerpt": "What safeguards reality from collapsing into mere availability? In a reading five years ago of Martin Heidegger’s The Question…"}, {"title": "Is Matter a Kind of Love?", "thumbnail": "https://substackcdn.com/image/fetch/$s_!5dzU!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F29117cf4-a125-487c-8240-fe1c62352b91_1024x1024.png", "url": "https://thomasjockin.substack.com/p/is-matter-a-kind-of-love", "sourceType": "substack", "excerpt": "Can Aristotle’s material cause be understood not merely as substrate, but as a receptive condition for embodied unity? This essay…"}, {"title": "Counterfactual Grace", "thumbnail": "https://substackcdn.com/image/fetch/$s_!fdKj!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F988bf3a7-ef37-437c-8a39-2ff3d534b925_1589x1600.jpeg", "url": "https://thomasjockin.substack.com/p/counterfactual-grace", "sourceType": "substack", "excerpt": "My father died on New Year’s Eve. He was a man who built his own house and fished with his family on boats off the Great South…"}, {"title": "From Wonder Bread to the Eucharist", "thumbnail": "https://substackcdn.com/image/fetch/$s_!yDxw!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fda2762da-27e8-4f48-9394-800f7bf36ef0_500x331.jpeg", "url": "https://thomasjockin.substack.com/p/from-wonder-bread-to-the-eucharist", "sourceType": "substack", "excerpt": "This is an expanded note from my recent contribution to a faculty panel titled Hope in Research , where faculty from different…"}, {"title": "Eros and the Problem of Place", "thumbnail": "https://substackcdn.com/image/fetch/$s_!g3Bw!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fc3d7d939-5c68-4917-b809-022e807662d0_1536x1024.png", "url": "https://thomasjockin.substack.com/p/eros-and-the-problem-of-place", "sourceType": "substack", "excerpt": "Eros is not merely a psychological relation to desire, but a participatory event grounded in a shared place. If this is so, then…"}, {"title": "The Friend as Chiral Image", "thumbnail": "https://substackcdn.com/image/fetch/$s_!OdjX!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F3002c7bf-57f9-4a92-a2cb-dd08f545cef7_2528x1696.png", "url": "https://thomasjockin.substack.com/p/the-friend-as-chiral-image", "sourceType": "substack", "excerpt": "There are moments in friendship when something uncanny happens. You watch a friend act courageously, forgive generously, or speak…"}, {"title": "Touch as a Metaphysical Constraint of the Beautiful", "thumbnail": "https://substackcdn.com/image/fetch/$s_!NbU7!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F760397dd-12b4-45a0-b47c-9d61edba6f17_1536x1024.png", "url": "https://thomasjockin.substack.com/p/touch-as-a-metaphysical-constraint", "sourceType": "substack", "excerpt": "Contemporary readings of De Anima tend to treat touch as a biological minimum condition for life, rather than as a metaphysical…"}, {"title": "Divination, Design, and the Digital Soul", "thumbnail": "https://substackcdn.com/image/fetch/$s_!1L1A!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F8ee9bea0-265e-4192-9ee5-332d61306b5e_1024x1024.png", "url": "https://thomasjockin.substack.com/p/divination-design-and-the-digital", "sourceType": "substack", "excerpt": "Curiosity is not simply the desire to know, but the desire to see—and what we choose to look toward shapes who we become. In a…"}, {"title": "Aristotle’s Forgotten Theory of Memory in the Heart", "thumbnail": "https://substackcdn.com/image/fetch/$s_!PyVD!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fb3f406ae-2ab2-4338-b56e-b6308d4b49f0_1536x1024.png", "url": "https://thomasjockin.substack.com/p/aristotles-forgotten-theory-of-memory", "sourceType": "substack", "excerpt": "At The Net session this week, hosted by O.G. Rose , we spoke about memory and attention. Memory is a most curious condition of…"}, {"title": "The Geometry of Subjectivity", "thumbnail": "https://substackcdn.com/image/fetch/$s_!DZkL!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F154494d1-3b2b-4d1d-9b0e-1051f395b1b9_775x480.jpeg", "url": "https://thomasjockin.substack.com/p/the-geometry-of-subjectivity", "sourceType": "substack", "excerpt": "Christ Handing the Keys to St. Peter by Pietro Perugino Vanishing point perspective in art is an artificial imposition on nature…"}, {"title": "Design as Festivity", "thumbnail": "https://substackcdn.com/image/fetch/$s_!uw1w!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F727dbf0d-a8fd-4d8a-b7b8-b1b3328399be_2667x1690.png", "url": "https://thomasjockin.substack.com/p/design-as-festivity", "sourceType": "substack", "excerpt": "Josef Pieper, in his book In Tune with the World: A Theory of Festivity , writes on the notion of the festival. Pieper describes…"}, {"title": "Images to Understand the Soul", "thumbnail": "https://substackcdn.com/image/fetch/$s_!rLdT!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F8d2d0eae-b05f-4354-9c65-2aadd4ede7f7_1024x608.png", "url": "https://thomasjockin.substack.com/p/images-to-understand-the-soul", "sourceType": "substack", "excerpt": "This week, the reading group composed of , Andrew Luber and myself remarked on the use of images and analogies by Al-Ghazali in…"}, {"title": "Plato on Beauty and Virtue", "thumbnail": "https://uploads.teachablecdn.com/attachments/r3xAOOe4QNy9V8IQ1qaD_IMG_3425.jpeg", "url": "https://halkyonacademy.com/p/plato-on-beauty-and-virtue", "sourceType": "article", "excerpt": "Plato On Beauty and Virtue Join the path towards the Good, the True, the Beautiful Enrol in Course The Course: Six Platonic…"}, {"title": "Thomas Jockin - Beauty Changes Your Life — Parallax", "thumbnail": "http://static1.squarespace.com/static/5cf273037b405a0001103c6e/614847f77518fe50f3962299/6a08b7de9229aa1050e67b08/1779975341716/Copy+of+course+header.png?format=1500w", "url": "https://www.parallax-media.com/courses/beauty-changes-your-life-thomas-jockin", "sourceType": "article", "excerpt": "Beauty Changes your life will start Monday, July 6 with with Thomas Jockin"}];
+  const KALON_POOL = [{"title": "FotB #4 Can You Know What Your Life Means Before You Die?", "thumbnail": "https://i.ytimg.com/vi/sL0aprvdMxk/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=sL0aprvdMxk", "sourceType": "youtube", "excerpt": "Can we understand the meaning of our lives while we are still living them, or does every new encounter rewrite what came before?…"}, {"title": "FotB #3: Why We Chase Rare Things (And Why They're Never Enough)", "thumbnail": "https://i.ytimg.com/vi/RkGDiU0H6u8/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=RkGDiU0H6u8", "sourceType": "youtube", "excerpt": "We chase limited editions. Luxury goods. Collectibles. Things that are difficult to obtain. But are we really after rarity? In…"}, {"title": "Dignity is a Mnemonic of the Beautiful", "thumbnail": "https://substackcdn.com/image/fetch/$s_!BCAx!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F49543531-8b99-4c50-9216-b999a831f350_2128x1490.png", "url": "https://thomasjockin.substack.com/p/dignity-is-a-mnemonic-of-the-beautiful", "sourceType": "substack", "excerpt": "What safeguards reality from collapsing into mere availability? In a reading five years ago of Martin Heidegger’s The Question…"}, {"title": "Is Matter a Kind of Love?", "thumbnail": "https://substackcdn.com/image/fetch/$s_!5dzU!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F29117cf4-a125-487c-8240-fe1c62352b91_1024x1024.png", "url": "https://thomasjockin.substack.com/p/is-matter-a-kind-of-love", "sourceType": "substack", "excerpt": "Can Aristotle’s material cause be understood not merely as substrate, but as a receptive condition for embodied unity? This essay…"}, {"title": "Counterfactual Grace", "thumbnail": "https://substackcdn.com/image/fetch/$s_!fdKj!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F988bf3a7-ef37-437c-8a39-2ff3d534b925_1589x1600.jpeg", "url": "https://thomasjockin.substack.com/p/counterfactual-grace", "sourceType": "substack", "excerpt": "My father died on New Year’s Eve. He was a man who built his own house and fished with his family on boats off the Great South…"}, {"title": "From Wonder Bread to the Eucharist", "thumbnail": "https://substackcdn.com/image/fetch/$s_!yDxw!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fda2762da-27e8-4f48-9394-800f7bf36ef0_500x331.jpeg", "url": "https://thomasjockin.substack.com/p/from-wonder-bread-to-the-eucharist", "sourceType": "substack", "excerpt": "This is an expanded note from my recent contribution to a faculty panel titled Hope in Research , where faculty from different…"}, {"title": "Eros and the Problem of Place", "thumbnail": "https://substackcdn.com/image/fetch/$s_!g3Bw!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fc3d7d939-5c68-4917-b809-022e807662d0_1536x1024.png", "url": "https://thomasjockin.substack.com/p/eros-and-the-problem-of-place", "sourceType": "substack", "excerpt": "Eros is not merely a psychological relation to desire, but a participatory event grounded in a shared place. If this is so, then…"}, {"title": "The Friend as Chiral Image", "thumbnail": "https://substackcdn.com/image/fetch/$s_!OdjX!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F3002c7bf-57f9-4a92-a2cb-dd08f545cef7_2528x1696.png", "url": "https://thomasjockin.substack.com/p/the-friend-as-chiral-image", "sourceType": "substack", "excerpt": "There are moments in friendship when something uncanny happens. You watch a friend act courageously, forgive generously, or speak…"}, {"title": "Touch as a Metaphysical Constraint of the Beautiful", "thumbnail": "https://substackcdn.com/image/fetch/$s_!NbU7!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F760397dd-12b4-45a0-b47c-9d61edba6f17_1536x1024.png", "url": "https://thomasjockin.substack.com/p/touch-as-a-metaphysical-constraint", "sourceType": "substack", "excerpt": "Contemporary readings of De Anima tend to treat touch as a biological minimum condition for life, rather than as a metaphysical…"}, {"title": "Divination, Design, and the Digital Soul", "thumbnail": "https://substackcdn.com/image/fetch/$s_!1L1A!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F8ee9bea0-265e-4192-9ee5-332d61306b5e_1024x1024.png", "url": "https://thomasjockin.substack.com/p/divination-design-and-the-digital", "sourceType": "substack", "excerpt": "Curiosity is not simply the desire to know, but the desire to see—and what we choose to look toward shapes who we become. In a…"}, {"title": "Aristotle’s Forgotten Theory of Memory in the Heart", "thumbnail": "https://substackcdn.com/image/fetch/$s_!PyVD!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fb3f406ae-2ab2-4338-b56e-b6308d4b49f0_1536x1024.png", "url": "https://thomasjockin.substack.com/p/aristotles-forgotten-theory-of-memory", "sourceType": "substack", "excerpt": "At The Net session this week, hosted by O.G. Rose , we spoke about memory and attention. Memory is a most curious condition of…"}, {"title": "The Geometry of Subjectivity", "thumbnail": "https://substackcdn.com/image/fetch/$s_!DZkL!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F154494d1-3b2b-4d1d-9b0e-1051f395b1b9_775x480.jpeg", "url": "https://thomasjockin.substack.com/p/the-geometry-of-subjectivity", "sourceType": "substack", "excerpt": "Christ Handing the Keys to St. Peter by Pietro Perugino Vanishing point perspective in art is an artificial imposition on nature…"}, {"title": "Design as Festivity", "thumbnail": "https://substackcdn.com/image/fetch/$s_!uw1w!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F727dbf0d-a8fd-4d8a-b7b8-b1b3328399be_2667x1690.png", "url": "https://thomasjockin.substack.com/p/design-as-festivity", "sourceType": "substack", "excerpt": "Josef Pieper, in his book In Tune with the World: A Theory of Festivity , writes on the notion of the festival. Pieper describes…"}, {"title": "Images to Understand the Soul", "thumbnail": "https://substackcdn.com/image/fetch/$s_!rLdT!,w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F8d2d0eae-b05f-4354-9c65-2aadd4ede7f7_1024x608.png", "url": "https://thomasjockin.substack.com/p/images-to-understand-the-soul", "sourceType": "substack", "excerpt": "This week, the reading group composed of , Andrew Luber and myself remarked on the use of images and analogies by Al-Ghazali in…"}, {"title": "Plato on Beauty and Virtue", "thumbnail": "https://uploads.teachablecdn.com/attachments/r3xAOOe4QNy9V8IQ1qaD_IMG_3425.jpeg", "url": "https://halkyonacademy.com/p/plato-on-beauty-and-virtue", "sourceType": "article", "excerpt": "Plato On Beauty and Virtue Join the path towards the Good, the True, the Beautiful Enrol in Course The Course: Six Platonic…"}, {"title": "Thomas Jockin - Beauty Changes Your Life — Parallax", "thumbnail": "http://static1.squarespace.com/static/5cf273037b405a0001103c6e/614847f77518fe50f3962299/6a08b7de9229aa1050e67b08/1779975341716/Copy+of+course+header.png?format=1500w", "url": "https://www.parallax-media.com/courses/beauty-changes-your-life-thomas-jockin", "sourceType": "article", "excerpt": "Beauty Changes your life will start Monday, July 6 with with Thomas Jockin"}, /*OGROSE:start*/ {"title":"The Stakes (Part 2) w/ C Money, Thomas Jockin, and O.G. Rose","thumbnail":"https://i.ytimg.com/vi/JhDVG14Lww4/maxresdefault.jpg","url":"https://www.youtube.com/watch?v=JhDVG14Lww4","sourceType":"youtube","kind":"Conversation","excerpt":"What are the stakes of the initiatives, efforts, and work we gravitate toward? From the global to the personal, why do we…"}, {"title":"The Stakes (Part 1) w/ C Money, Thomas Jockin, and O.G. Rose","thumbnail":"https://i.ytimg.com/vi/IHfWG8uNTUA/maxresdefault.jpg","url":"https://www.youtube.com/watch?v=IHfWG8uNTUA","sourceType":"youtube","kind":"Conversation","excerpt":""}, {"title":"John Vervaeke & Thomas Jockin - How Beauty Saves the World","thumbnail":"https://i.ytimg.com/vi/hjor3hc_OxU/maxresdefault.jpg","url":"https://www.youtube.com/watch?v=hjor3hc_OxU","sourceType":"youtube","kind":"Conversation","excerpt":"John Vervaeke and Thomas Jockin join Andrew Sweeny at Parallax for a conversation on beauty, Plato, Aristotle, the sacred…"}, {"title":"Root and Rhizome (IV) w/ Thomas Jockin, Andrew Luber, and O.G. Rose","thumbnail":"https://i.ytimg.com/vi/MHfvDkqHFN4/maxresdefault.jpg","url":"https://www.youtube.com/watch?v=MHfvDkqHFN4","sourceType":"youtube","kind":"Conversation","excerpt":"Set beside the Deleuzian rhizome, a Thomistic account of root allows the modern phrase “root cause” to be reconsidered as…"}, {"title":"Beauty Changes Your Life - Plato, Aristotle, and the Beautiful w. Thomas Jockin","thumbnail":"https://i.ytimg.com/vi/-FMmVID9Rwg/maxresdefault.jpg","url":"https://www.youtube.com/watch?v=-FMmVID9Rwg","sourceType":"youtube","kind":"Conversation","excerpt":""}, {"title":"Root and Rhizome (I) w/ Thomas Jockin and O.G. Rose","thumbnail":"https://i.ytimg.com/vi/At7qGxl7O9w/maxresdefault.jpg","url":"https://www.youtube.com/watch?v=At7qGxl7O9w","sourceType":"youtube","kind":"Conversation","excerpt":""}, {"title":"Terms of Service Brutalism, Debt, and Satan w/ Thomas Jockin, The Economancer, and O.G. Rose","thumbnail":"https://i.ytimg.com/vi/Q-AIRNvDkE8/maxresdefault.jpg","url":"https://www.youtube.com/watch?v=Q-AIRNvDkE8","sourceType":"youtube","kind":"Conversation","excerpt":"What sustained the conversation was not disagreement so much as recognition: the growing sense that the way freedom now…"}, {"title":"Episode #235: Thomas Jockin on \"Health and Virtue: A Journey to Wellness\"","thumbnail":"https://i.ytimg.com/vi/a_jXo4p0_oo/maxresdefault.jpg","url":"https://www.youtube.com/watch?v=a_jXo4p0_oo","sourceType":"youtube","kind":"Conversation","excerpt":"We live in an age of excess, where digital distractions and processed foods dull our perception and harm our well-being.…"}, {"title":"Episode #230: Alex Ebert and Thomas Jockin on the Collapse of the Good Into the Beautiful","thumbnail":"https://i.ytimg.com/vi/FXtxODHaWqI/maxresdefault.jpg","url":"https://www.youtube.com/watch?v=FXtxODHaWqI","sourceType":"youtube","kind":"Conversation","excerpt":"Said function is now the centerpiece of his Hegelian philosophy of sublation (freQ theory), and, for better or worse, serves…"}, {"title":"Episode #226: Thomas Jockin with Haven on Videogames, Philosophy, and More","thumbnail":"https://i.ytimg.com/vi/Z2EgUWkOSKk/maxresdefault.jpg","url":"https://www.youtube.com/watch?v=Z2EgUWkOSKk","sourceType":"youtube","kind":"Conversation","excerpt":""}, {"title":"Episode #224: Thomas Jockin and Javier Rivera on Virtual Ethics and Geopadia","thumbnail":"https://i.ytimg.com/vi/g3pmwCs7x9E/maxresdefault.jpg","url":"https://www.youtube.com/watch?v=g3pmwCs7x9E","sourceType":"youtube","kind":"Conversation","excerpt":""}, {"title":"Episode #215: Thomas Jockin, Andrew Luber, and Javier Rivera on Agency and Nature","thumbnail":"https://i.ytimg.com/vi/vQHlisLlWqQ/maxresdefault.jpg","url":"https://www.youtube.com/watch?v=vQHlisLlWqQ","sourceType":"youtube","kind":"Conversation","excerpt":""}, {"title":"Episode #192: Thomas Jockin on Beauty and Economics","thumbnail":"https://i.ytimg.com/vi/KFETBPqR9XE/maxresdefault.jpg","url":"https://www.youtube.com/watch?v=KFETBPqR9XE","sourceType":"youtube","kind":"Conversation","excerpt":""}, {"title":"Rediscovering Plato's Beauty | Thomas Jockin","thumbnail":"https://i.ytimg.com/vi/-veBAgVT7gQ/maxresdefault.jpg","url":"https://www.youtube.com/watch?v=-veBAgVT7gQ","sourceType":"youtube","kind":"Conversation","excerpt":"Can re-engaging with classical ideals of beauty help us address the meaning crisis?"}, {"title":"Episode #173: Thomas Jockin on Plato, Beauty, and Virtue","thumbnail":"https://i.ytimg.com/vi/NSZDgdH_NPU/maxresdefault.jpg","url":"https://www.youtube.com/watch?v=NSZDgdH_NPU","sourceType":"youtube","kind":"Conversation","excerpt":"A careful reading of Plato’s work reveals that beauty plays a sophisticated role in the metaphysical, ontological…"}, {"title":"Episode #159: Thomas Jockin on the Movement, Agency, and Beauty of Gratitude","thumbnail":"https://i.ytimg.com/vi/KQ_HDmjwjoo/maxresdefault.jpg","url":"https://www.youtube.com/watch?v=KQ_HDmjwjoo","sourceType":"youtube","kind":"Conversation","excerpt":""} /*OGROSE:end*/];
   const TT_POOL = [{"title": "Type Thursday Book Club – Never Split the Difference by Chris Voss & Tahl Raz", "thumbnail": "https://i.ytimg.com/vi/2auOu_nprxo/maxresdefault_live.jpg", "url": "https://www.youtube.com/watch?v=2auOu_nprxo", "sourceType": "youtube", "excerpt": "Welcome to Season 2 of the Type Thursday Book Club, a weekly conversation on books exploring typography, design, and the ideas…"}, {"title": "Type Thursday Book Club – Type Matters! by Jim Williams", "thumbnail": "https://i.ytimg.com/vi/62kCJP8ohzw/maxresdefault_live.jpg", "url": "https://www.youtube.com/watch?v=62kCJP8ohzw", "sourceType": "youtube", "excerpt": "Welcome to Season 2 of the Type Thursday Book Club, a weekly conversation on books exploring typography, design, and the ideas…"}, {"title": "Type Thursday Book Club – Against Creativity by Oli Mould", "thumbnail": "https://i.ytimg.com/vi/eU-zBFG74hs/maxresdefault_live.jpg", "url": "https://www.youtube.com/watch?v=eU-zBFG74hs", "sourceType": "youtube", "excerpt": "Welcome to Season 2 of the Type Thursday Book Club, a weekly conversation on books exploring typography, design, and the ideas…"}, {"title": "Type Thursday Book Club, Episode 16 – Season 1 Recap", "thumbnail": "https://i.ytimg.com/vi/eZ_mSIPT3R8/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=eZ_mSIPT3R8", "sourceType": "youtube", "excerpt": "Welcome to the Type Thursday Book Club, a weekly conversation on books exploring typography, design, and the ideas that shape our…"}, {"title": "Type Thursday Book Club, Episode 15 – The Typography Idea Book by Gail Anderson & Steven Heller", "thumbnail": "https://i.ytimg.com/vi/6fS9KhrEwDM/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=6fS9KhrEwDM", "sourceType": "youtube", "excerpt": "Welcome to the Type Thursday Book Club, a weekly conversation on books exploring typography, design, and the ideas that shape our…"}, {"title": "Type Thursday Book Club, Episode 14 – The Stroke: Theory of Writing by Gerrit Noordzij", "thumbnail": "https://i.ytimg.com/vi/ZlHHjG__GhA/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=ZlHHjG__GhA", "sourceType": "youtube", "excerpt": "Welcome to the Type Thursday Book Club, a weekly conversation on books exploring typography, design, and the ideas that shape our…"}, {"title": "Type Thursday Book Club, Episode 13 – This Is Strategy: Make Better Plans by Seth Godin", "thumbnail": "https://i.ytimg.com/vi/5hB-UD8wKJw/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=5hB-UD8wKJw", "sourceType": "youtube", "excerpt": "Welcome to the Type Thursday Book Club, a weekly conversation on books exploring typography, design, and the ideas that shape our…"}, {"title": "Type Thursday Book Club, Epsiode 12 – Ruined by Design by Mike Monteiro", "thumbnail": "https://i.ytimg.com/vi/ZjJ3BxcZaN4/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=ZjJ3BxcZaN4", "sourceType": "youtube", "excerpt": "Welcome to the Type Thursday Book Club, a weekly conversation on books exploring typography, design, and the ideas that shape our…"}, {"title": "Type Thursday Book Club, Episode 11 – How to Be a Graphic Designer w/o Losing Your Soul", "thumbnail": "https://i.ytimg.com/vi/VwLX5wFVtvo/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=VwLX5wFVtvo", "sourceType": "youtube", "excerpt": "Welcome to the Type Thursday Book Club, a weekly conversation on books exploring typography, design, and the ideas that shape our…"}, {"title": "Type Thursday Book Club, Episode 10 – Thinking with Type by Ellen Lupton", "thumbnail": "https://i.ytimg.com/vi/-iiOUBcJbx0/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=-iiOUBcJbx0", "sourceType": "youtube", "excerpt": "Welcome to the Type Thursday Book Club, a weekly conversation on books exploring typography, design, and the ideas that shape our…"}, {"title": "Type Thursday Book Club, Episode 9 – Grid Systems in Graphic Design by Josef Müller-Brockmann", "thumbnail": "https://i.ytimg.com/vi/R3RX9O8jbco/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=R3RX9O8jbco", "sourceType": "youtube", "excerpt": "Welcome to the Type Thursday Book Club, a weekly conversation on books exploring typography, design, and the ideas that shape our…"}, {"title": "Type Thursday Book Club: Grid Systems by Josef Müller-Brockmann", "thumbnail": "https://i.ytimg.com/vi/UIbX4WC446c/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=UIbX4WC446c", "sourceType": "youtube", "excerpt": "📖 Going Live with my Type Thursday Book Club crew for another fun Graphic Design review: Grid Systems in Graphic Design by Josef…"}, {"title": "Type Thursday Book Club, Episode 8 – The Elements of Typographic Style by Robert Bringhurst", "thumbnail": "https://i.ytimg.com/vi/Ri9PzLKomrA/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=Ri9PzLKomrA", "sourceType": "youtube", "excerpt": "Welcome to the Type Thursday Book Club, a weekly conversation on books exploring typography, design, and the ideas that shape our…"}, {"title": "The Best Typography & Graphic Design Community Event in Los Angeles: Type Thursday", "thumbnail": "https://i.ytimg.com/vi/1dWK8cu2JmU/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=1dWK8cu2JmU", "sourceType": "youtube", "excerpt": "No matter who you are — you belong at the best typography and Graphic Design community event in Los Angeles, CA! Whether you're a…"}, {"title": "Type Thursday Book Club, Episode 7 – Don’t Make Me Think by Steve Krug", "thumbnail": "https://i.ytimg.com/vi/WEc04XKgCcs/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=WEc04XKgCcs", "sourceType": "youtube", "excerpt": "Welcome to the Type Thursday Book Club, a weekly conversation on books exploring typography, design, and the ideas that shape our…"}, {"title": "Type Thursday Book Club, Episode 6 – Inside Paragraphs by Cyrus Highsmith", "thumbnail": "https://i.ytimg.com/vi/RaFVWfxSHDo/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=RaFVWfxSHDo", "sourceType": "youtube", "excerpt": "Welcome to the Type Thursday Book Club, a weekly conversation on books exploring typography, design, and the ideas that shape our…"}, {"title": "Type Thursday Book Club, Episode 5 – The Design of Everyday Things by Donald Norman", "thumbnail": "https://i.ytimg.com/vi/CMHoGQ9CLBg/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=CMHoGQ9CLBg", "sourceType": "youtube", "excerpt": "Welcome to the Type Thursday Book Club, a weekly conversation on books exploring typography, design, and the ideas that shape our…"}, {"title": "Type Thursday Book Club, Episode 4 – House Industries Lettering Manual by Ken Barber", "thumbnail": "https://i.ytimg.com/vi/COT5V4KNjjI/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=COT5V4KNjjI", "sourceType": "youtube", "excerpt": "Welcome to the Type Thursday Book Club, a weekly conversation on books exploring typography, design, and the ideas that shape our…"}, {"title": "Type Thursday Book Club, Episode 3 – 7 Habits of Highly Effective People by Stephen R. Covey", "thumbnail": "https://i.ytimg.com/vi/btiYKNuyiQ8/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=btiYKNuyiQ8", "sourceType": "youtube", "excerpt": "Welcome to the Type Thursday Book Club, a weekly conversation on books exploring typography, design, and the ideas that shape our…"}, {"title": "Type Thursday Book Club, Episode 2 – Logos That Last by Allan Peters", "thumbnail": "https://i.ytimg.com/vi/WtoGEnTc9R0/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=WtoGEnTc9R0", "sourceType": "youtube", "excerpt": "Welcome to the Type Thursday Book Club, a weekly conversation on books exploring typography, design, and the ideas that shape our…"}, {"title": "Type Thursday Book Club, Episode 1 – The Golden Secrets of Lettering by Martina Flor", "thumbnail": "https://i.ytimg.com/vi/b8XVpufWmhU/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=b8XVpufWmhU", "sourceType": "youtube", "excerpt": "Welcome to the Type Thursday Book Club, a weekly conversation on books exploring typography, design, and the ideas that shape our…"}, {"title": "Fall 2020 Design 2 Thursday for December 10 2020", "thumbnail": "https://i.ytimg.com/vi/e79X7gysf3g/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=e79X7gysf3g", "sourceType": "youtube", "excerpt": "Our final class for the semester. Thank you class for a rewarding semester."}, {"title": "Fall 2020 Typography 1 for December 1st 2020", "thumbnail": "https://i.ytimg.com/vi/PLIktKTix20/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=PLIktKTix20", "sourceType": "youtube", "excerpt": "Featuring Anna Fine https://twitter.com/somefinetweets"}, {"title": "Fall 2020 Typography 1 for November 24 2020", "thumbnail": "https://i.ytimg.com/vi/zMc_G2MuMX4/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=zMc_G2MuMX4", "sourceType": "youtube", "excerpt": "Featuring Zipeng Zhu https://vimeo.com/dazzling/reel2020"}, {"title": "Fall 2020 Typography 1 for November 10 2020", "thumbnail": "https://i.ytimg.com/vi/7DHLVgh7sk0/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=7DHLVgh7sk0", "sourceType": "youtube", "excerpt": "Starring guest speaker Faride Mereb https://faridemereb.com/ https://twitter.com/fmereb https://www.instagram.com/fmereb/"}, {"title": "Exploring Hangul with Aaron Bell", "thumbnail": "https://i.ytimg.com/vi/pNITXpr_ZNc/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=pNITXpr_ZNc", "sourceType": "youtube", "excerpt": "In this special edition of Fontribute, Hangul typeface designer Aaron Bell walk us through the important distinctions between a…"}, {"title": "Exploring Devanagari with Erin McLaughlin", "thumbnail": "https://i.ytimg.com/vi/4LGdjjm31v4/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=4LGdjjm31v4", "sourceType": "youtube", "excerpt": "In this special edition of Fontribute, Devanagari typeface designer Erin McLaughlin walk us through the important distinctions…"}, {"title": "Exploring Narrow Widths with Omnes Narrow", "thumbnail": "https://i.ytimg.com/vi/BFGaJw7P6Bo/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=BFGaJw7P6Bo", "sourceType": "youtube", "excerpt": "This week, TypeThursday founder Thomas Jockin explores how decisions in spacing and weight impact a font's tone in Omnes Narrow…"}, {"title": "Exploring Elektrix", "thumbnail": "https://i.ytimg.com/vi/H_hRmjnJlOg/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=H_hRmjnJlOg", "sourceType": "youtube", "excerpt": "This week, TypeThursday founder Thomas Jockin explores how different font weights can create very different impressions. The…"}, {"title": "Exploring Italic: Crimson Text and Source Serif", "thumbnail": "https://i.ytimg.com/vi/mvPe6FYyKkA/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=mvPe6FYyKkA", "sourceType": "youtube", "excerpt": "This week, TypeThursday founder Thomas Jockin explores what makes italics unique. The fonts explored this week are Crimson Text…"}, {"title": "For Headline or Body Copy? Exploring Open Sans with Alegreya sans", "thumbnail": "https://i.ytimg.com/vi/ZILnIDVW048/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=ZILnIDVW048", "sourceType": "youtube", "excerpt": "This week, TypeThursday founder Thomas Jockin explores contemporary san serifs intended to be friendly in appearance. The fonts…"}, {"title": "Exploring MonoCromo", "thumbnail": "https://i.ytimg.com/vi/d27PHKzDOBY/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=d27PHKzDOBY", "sourceType": "youtube", "excerpt": "This week,TypeThursday founder Thomas Jockin is joined by Derek Lopez Vergara Anaya to explore his font MonoCromo."}, {"title": "Exploring Zangezi", "thumbnail": "https://i.ytimg.com/vi/G1Sn3l0JVMs/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=G1Sn3l0JVMs", "sourceType": "youtube", "excerpt": "This week,TypeThursday founder Thomas Jockin is joined by Daria Petrova to explore her font Zangezi. Check out Zangezi over a…"}, {"title": "Exploring Printworks", "thumbnail": "https://i.ytimg.com/vi/zofe_RO1gmc/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=zofe_RO1gmc", "sourceType": "youtube", "excerpt": "Each week, TypeThursday founder Thomas Jockin explores how fonts are use on the web. With these discussions, you can expect to…"}, {"title": "Exploring Kinetic by María Ramos and Noel Pretorius of NM Type", "thumbnail": "https://i.ytimg.com/vi/DQso_rR6S40/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=DQso_rR6S40", "sourceType": "youtube", "excerpt": "Each week, TypeThursday founder Thomas Jockin and typeface designer Erin McLaughlin reviews two fonts to reveal the…"}, {"title": "Exploring Kawak and Guardian Sans Headline", "thumbnail": "https://i.ytimg.com/vi/1sB0XXR67lw/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=1sB0XXR67lw", "sourceType": "youtube", "excerpt": "Each week, TypeThursday founder Thomas Jockin and typeface designer Erin McLaughlin reviews two fonts to reveal the…"}, {"title": "Revisiting Condensed Sans Serifs. Fontribute of a Work-in-Progress Font", "thumbnail": "https://i.ytimg.com/vi/mhXLDwYNJS8/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=mhXLDwYNJS8", "sourceType": "youtube", "excerpt": "Each week, TypeThursday founder Thomas Jockin and typeface designer Erin McLaughlin reviews two fonts to reveal the…"}, {"title": "Exploring Scripts! Fontribute of Blonde Script and Bistro Script", "thumbnail": "https://i.ytimg.com/vi/bujxmpUlCdM/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=bujxmpUlCdM", "sourceType": "youtube", "excerpt": "Each week, TypeThursday founder Thomas Jockin and typeface designer Erin McLaughlin reviews two fonts to reveal the…"}, {"title": "Characterful Grotesques: Fontribute of Marr Sans and Marcin Antique", "thumbnail": "https://i.ytimg.com/vi/nnxzL-JN4y8/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=nnxzL-JN4y8", "sourceType": "youtube", "excerpt": "Each week, TypeThursday founder Thomas Jockin and typeface designer Erin McLaughlin reviews two fonts to reveal the…"}, {"title": "Exploring Agate: Fontribute of Lipa High and Trench Sans", "thumbnail": "https://i.ytimg.com/vi/KL3Y7Q4yzZE/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=KL3Y7Q4yzZE", "sourceType": "youtube", "excerpt": "Each week, TypeThursday founder Thomas Jockin and typeface designer Erin McLaughlin reviews two fonts to reveal the…"}, {"title": "High Contrast! Oh my!: Fontribute of Keiss Big and Quase Display", "thumbnail": "https://i.ytimg.com/vi/vVuC3qkzFe8/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=vVuC3qkzFe8", "sourceType": "youtube", "excerpt": "Each week, TypeThursday founder Thomas Jockin and typeface designer Erin McLaughlin reviews two fonts to reveal the…"}, {"title": "Exploring fonts for User Interfaces: Fontribute of Source Sans and Fira Sans", "thumbnail": "https://i.ytimg.com/vi/pK0KPd481-M/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=pK0KPd481-M", "sourceType": "youtube", "excerpt": "Each week, TypeThursday founder Thomas Jockin and typeface designer Erin McLaughlin reviews two fonts to reveal the…"}, {"title": "Exploring Weights in Fonts: Fontribute of Alda", "thumbnail": "https://i.ytimg.com/vi/WE5LRAURTQ4/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=WE5LRAURTQ4", "sourceType": "youtube", "excerpt": "Each week, TypeThursday founder Thomas Jockin and typeface designer Erin McLaughlin reviews two fonts to reveal the…"}, {"title": "Aglet and Brace: A Fontribute Review", "thumbnail": "https://i.ytimg.com/vi/ZpeKkSNXmZk/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=ZpeKkSNXmZk", "sourceType": "youtube", "excerpt": "Each week, TypeThursday founder Thomas Jockin and typeface designer Erin McLaughlin reviews two fonts to reveal the…"}, {"title": "Exploring Spectral: A Google Font Fontribute", "thumbnail": "https://i.ytimg.com/vi/FJgO_OR-Pi8/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=FJgO_OR-Pi8", "sourceType": "youtube", "excerpt": "Each week, TypeThursday founder Thomas Jockin and typeface designer Erin McLaughlin reviews two fonts to reveal the…"}, {"title": "Cooper Hewitt and Graphik: A Fontribute Review", "thumbnail": "https://i.ytimg.com/vi/lQdEAFUd5Mg/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=lQdEAFUd5Mg", "sourceType": "youtube", "excerpt": "Each week, TypeThursday founder Thomas Jockin and typeface designer Erin McLaughlin reviews two fonts to reveal the…"}, {"title": "Bold Scripts: A Fontribute of Pique and Lokal Script 22", "thumbnail": "https://i.ytimg.com/vi/3au91IIyqm4/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=3au91IIyqm4", "sourceType": "youtube", "excerpt": "Each week, TypeThursday founder Thomas Jockin and typeface designer Erin McLaughlin reviews two fonts to reveal the…"}, {"title": "Sanomat and Berlingske: A Fontribute Review", "thumbnail": "https://i.ytimg.com/vi/_5jWln9c_7U/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=_5jWln9c_7U", "sourceType": "youtube", "excerpt": "Each week, TypeThursday founder Thomas Jockin and Typeface Designer Erin McLaughlin reviews two fonts to reveal the…"}, {"title": "Pilot and Zalamander: A Fontribute Review", "thumbnail": "https://i.ytimg.com/vi/rQY2XNgsRNY/maxresdefault.jpg", "url": "https://www.youtube.com/watch?v=rQY2XNgsRNY", "sourceType": "youtube", "excerpt": "Each week, TypeThursday founder Thomas Jockin reviews two fonts to reveal the considerations and approaches of different typeface…"}, {"title": "“Typography for Designers: Create Fonts for the Marketplace”. Calligraphy, and Typography online course by Thomas Jockin | Domestika", "thumbnail": "https://imgproxy.domestika.org/unsafe/s:1200:628/rs:fill/ex:true/el:true/plain/src://course-open-graph-covers/000/002/772/2772-original.png?1717187338", "url": "https://www.domestika.org/en/courses/2772-typography-for-designers-create-fonts-for-the-marketplace/course", "sourceType": "article", "excerpt": "Learn a simple yet effective research method to produce unique typefaces that communicate your vision"}, {"title": "TypeThursday’s Yearbook - Anselm Dästner", "thumbnail": "https://dastner.com/wp-content/uploads/2021/06/cover-800x430-1.jpg", "url": "https://dastner.com/yearbooktypethursday/", "sourceType": "article", "excerpt": "Type Thursday is a meet-up for people who like letterforms. We discuss and critique our work in progress and make friends and…"}];
 
   function shuffle(arr) {
@@ -2170,6 +2344,7 @@
   }
 
   function deriveMeta(item) {
+    if (item.kind) return item.kind;
     if (item.sourceType === 'substack') return 'Essay';
     if (item.sourceType === 'youtube') return 'Video';
     if (item.sourceType === 'article') return 'Article';
